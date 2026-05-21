@@ -1,0 +1,22 @@
+-- database: ./Business.db
+
+-- Selects all information ordered by the customer ID
+SELECT * FROM Customers
+ORDER BY `customer_ID` ASC;
+
+-- 
+SELECT firstname, lastname, street, city, postcode, packing_time, product_type, quantity
+FROM Orders
+JOIN Customers ON Customers.customer_ID = Orders.customer_ID
+    JOIN Shipments ON Shipments.shipping_ID = Orders.shipping_ID
+        JOIN Products ON Products.product_ID = Orders.product_ID
+    ORDER BY firstname ASC
+LIMIT 10;
+
+-- Selects all the order information based on order number
+SELECT order_number, firstname, lastname, to_region, ship_date, price_paid, street, city, postcode, product_type
+FROM Orders
+JOIN Customers ON Customers.customer_ID = Orders.customer_ID
+    JOIN Products ON Products.product_ID = Orders.product_ID
+WHERE order_number == ?
+ORDER BY firstname DESC;

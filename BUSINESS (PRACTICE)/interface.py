@@ -4,16 +4,16 @@ import sqlite3
 DATABASE = 'Business.db'
 
 def print_all_orders():
-    order = input("Order number: ")
+    order = input('Order number: ')
     with sqlite3.connect(DATABASE) as db:
         cursor = db.cursor()
-        sql = "SELECT order_number, product_ID, firstname, lastname, ph_num FROM Orders LEFT JOIN Orders = Orders.order_number ON Customer.order_number"
+        sql = "SELECT * FROM Orders WHERE order_number == ?;"
         cursor.execute(sql,(order,))
         results = cursor.fetchall()
-        # Prints results
+        # Prints them nicely
 
         for o in results:
-            print(f'Order Number: {order_number[0]} | Product ID: {product_ID[1]} | First Name: {firstname[2]} | Last Name: {lastname[3]}')
+            print(f"Order Number: {o[0]} | Customer ID: {o[1]} | Region: {o[2]} | Ship Date: {o[3]} | Price Paid: {o[4]} | Product ID: {o[5]} | Shipping ID {o[6]}")
 
 if __name__ == "__main__":
     print_all_orders()
