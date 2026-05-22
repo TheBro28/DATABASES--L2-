@@ -1,33 +1,37 @@
-from flask import Flask, g
-import sqlite3
+-- database: ./subvay.db
 
-DATABASE = 'subvay.db'
-    
-# Initialise App
-app = Flask(__name__)
+-- All Orders
+SELECT * FROM Orders;
 
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-        return db
-    
-@app.teardown_appcontext
-def close_connection(exception):
-    db = getattr(g, '_database', None)
-    if db is not None:
-      db.close()
+-- All Bread
+SELECT * FROM Bread
 
-def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
+-- All Toppings
+SELECT * FROM Toppings
 
-@app.route('/')
-def home():
-    # home page
-    sql = """SELECT 
+-- All Sauces
+SELECT * FROM Sauce
+
+-- All Cheeses
+SELECT * FROM Cheese
+
+-- All Custom Sandwich information
+SELECT * FROM Cus_Sandwich
+
+-- All Premade Sandwiches
+SELECT * FROM Pre_Sandwich
+
+-- All Payment Details
+SELECT * FROM Payment_Details
+
+-- All Offers
+SELECT * FROM Offers
+
+-- All Customers
+SELECT * FROM Customer
+
+-- Creating Custom Sandwich
+SELECT 
     Customer.acc_number, -- Customer account number
     Bread.name AS bread_name, -- Name of the bread used
     Cheese.name AS cheese_name, -- Name of the cheese used
@@ -66,32 +70,5 @@ GROUP BY
     Customer.acc_number, -- Grouping by customer account
     Bread.name, -- Grouping by bread name
     Cheese.name, -- Grouping by cheese name
-    Orders.quantity;
-"""
-    results = query_db(sql)
-    return str(results)
-
-@app.route('/sandwich/<int:ID>')
-def sandwich(ID):
-    # Just one sandwich based on the ID
-    sql =  """SELECT """
-
-
-@app.route('/menu')
-def menu():
-    return ""
-
-@app.route('/premade_sandwich')
-def pre_sandwich():
-    return ""
-
-@app.route('/basket')
-def basket():
-    return ""
-
-@app.route('/checkout')
-def checkout():
-    return ""
-
-if __name__ == "__main__":
-    app.run(debug=True)
+    Orders.quantity
+    
