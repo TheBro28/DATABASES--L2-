@@ -1,0 +1,22 @@
+body, h1, h2, h3, h4, h5, h6 {
+  font-family: "Work Sans", "Fredoka", "Rubik Dirt";
+}
+
+
+nav {
+    height: 109px;
+    background-color: #242424;
+}
+
+footer {
+
+
+}
+
+body {
+    background-image: url('static/Images/background.png');
+    background-size: cover; /* makes the image cover the entire background */
+    background-position: center; /* centers the image */
+    background-repeat: no-repeat; /* prevents image occuring multiple times */
+    background-attachment: fixed; /* optional, makes the background stay fixed when scrolling */
+}

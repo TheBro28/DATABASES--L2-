@@ -77,9 +77,10 @@ def sandwich(ID):
     sql =  """SELECT """
 
 
+
 @app.route('/menu')
 def menu():
-    return ""
+    return "menu.html"
 
 @app.route('/premade_sandwich')
 def pre_sandwich():
@@ -95,3 +96,4 @@ def checkout():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
