@@ -1,8 +1,3 @@
-body, h1, h2, h3, h4, h5, h6 {
-  font-family: "Work Sans", "Fredoka", "Rubik Dirt";
-}
-
-
 nav {
     height: 109px;
     background-color: #242424;
@@ -10,13 +5,40 @@ nav {
 
 footer {
 
-
 }
 
+/* Fixes the image "background.png" to the body of all pages */
 body {
-    background-image: url('static/Images/background.png');
+    background-image: url('Images/background.png');
     background-size: cover; /* makes the image cover the entire background */
     background-position: center; /* centers the image */
     background-repeat: no-repeat; /* prevents image occuring multiple times */
-    background-attachment: fixed; /* optional, makes the background stay fixed when scrolling */
+    background-attachment: fixed; /*makes the background stay fixed when scrolling */
 }
+
+/* "Work Sans" styles */
+.ws {
+    font-family: "Work Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 100;
+    font-style: normal;
+}
+
+/* "Fredoka" styles */
+.fr {
+    font-family: "Fredoka", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 100;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+}
+
+/* "Rubik Dirt" styles */
+.rd {
+    font-family: "Rubik Dirt", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    color: #FF0020;
+}
+
+

@@ -1,4 +1,4 @@
-from flask import Flask, g
+from flask import Flask, g, render_template
 import sqlite3
 
 DATABASE = 'subvay.db'
@@ -69,7 +69,7 @@ GROUP BY
     Orders.quantity;
 """
     results = query_db(sql)
-    return str(results)
+    return render_template("Website Pages/Sandwich Related Pages/SoTD.html")
 
 @app.route('/sandwich/<int:ID>')
 def sandwich(ID):
