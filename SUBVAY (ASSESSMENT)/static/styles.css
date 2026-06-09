@@ -3,9 +3,15 @@ nav {
     background-color: #242424;
 }
 
-footer {
+/*------------------------------ Seperator Line ------------------------------*/
 
+footer {
+    height: 109px;
+    background-color: #242424;
+    text-align: center;
 }
+
+/*------------------------------ Seperator Line ------------------------------*/
 
 /* Fixes the image "background.png" to the body of all pages */
 body {
@@ -15,6 +21,10 @@ body {
     background-repeat: no-repeat; /* prevents image occuring multiple times */
     background-attachment: fixed; /*makes the background stay fixed when scrolling */
 }
+
+/*------------------------------ Seperator Line ------------------------------*/
+
+/* FONTS */
 
 /* "Work Sans" styles */
 .ws {
@@ -40,5 +50,28 @@ body {
     font-style: normal;
     color: #FF0020;
 }
+
+/*------------------------------ Seperator Line ------------------------------*/
+
+/* TEXT STYLES */
+
+/* Global heading sizes for each */
+h1 { font-size: 50px; }
+h2 { font-size: 40px; }
+h3 { font-size: 30px; }
+h4 { font-size: 25px; }
+h5 { font-size: 20px; }
+h6 { font-size: 15px; }
+
+
+/* Global color classes for headings and other elements */
+.red { color: #FF0909; }
+.yellow { color: #FFC809; }
+.white { color: white; }
+
+/*------------------------------ Seperator Line ------------------------------*/
+
+
+
 
 
