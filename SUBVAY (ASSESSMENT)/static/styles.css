@@ -71,7 +71,20 @@ h6 { font-size: 15px; }
 
 /*------------------------------ Seperator Line ------------------------------*/
 
+.three-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10em;
+}
 
+.two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25em;
+}
 
+img {
+
+}
 
 

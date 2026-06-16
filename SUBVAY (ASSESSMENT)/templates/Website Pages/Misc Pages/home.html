@@ -1,62 +1,47 @@
+<!--This code is transfered from the layout page to this page and all others. It is here just for display and would be inefficient if included as actual code-->
+<!--
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!--Linking fonts to template-->
-
-        <!--This code links the font "work sans" to this page-->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
-        <!--This code links the font "fredoka" to this page"-->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
-    <title>Subvay Home</title>
-</head>
-
-<body>
-   <!--Shared Header Bar-->
-   <!--Shared Navbar-->
-   {% block body %}
-   {% endblock %}
-
-
-    <nav>
-        <!--This is the navigation bar, it will appear at the very top of the screen and contain links to all other main pages-->
-
-
-    </nav>
-
-
-    <header>
-        <!--This is the header of the page. It will only contain a banner image sporting the brandname, motto, brief description of business, 
-        and images of some avaliable products-->
-
-        
-    </header>
-
     
+        Linking fonts to template
 
-    <main>
-        <!--This is the main content of the page, it will appear under the banner image and contain one of the company's offers (sub of the day), 
-        and will also include another brief description about the business's commitments and practices-->
+            This code links the font "work sans" to this page
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
+            This code links the font "fredoka" to this page"
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
 
-    </main>
+        <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
 
+    -->
+    
+{% Block Title %}Home{% Endblock %}
 
-    <footer>
-        <!--This will sit at the bottom of the page with a contact email-->
+{% Block Nav %} 
+    <nav class="w3-bar w3-black">
+        <a href="#" class="w3-bar-item w3-button">Home</a>
+        <a href="#" class="w3-bar-item w3-button">Link 1</a>
+        <a href="#" class="w3-bar-item w3-button">Link 2</a>
+        <a href="#" class="w3-bar-item w3-button">Link 3</a>
+    </nav>
+{% Endblock %}
 
+{% Block Content %}
 
-    </footer>
-        
-    </body>
-</html>
+<div class="2-column"></div>
+<div class="w3-card-4"></div>
+
+<header>
+<img src="static/Images/banner_img.png" alt="Banner image for website with pictures of avaliable subs and description of the business">
+
+</header>
+
+{% Endblock %}

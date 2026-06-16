@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!--Linking fonts to template-->
+
+        <!--This code links the font "work sans" to the layout-->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+        <!--This code links the font "fredoka" to the layout"-->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+
+        <!--This code links a custom stylesheet and w3schools stylesheet to layout-->
+        <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+
+
+    <title>{% Block Title %} {% Endblock %}</title>
+</head>
+
+
+<body>
+
+{% Block Nav %} {% Endblock %}
+
+{% Block Content %} {% Endblock %}
+
+<footer>
+    <h3 class="ws"><strong>Contact Us: help@subvaysandwiches.co.nz</strong></h3>
+</footer>
+
+
+</body>
+</html>

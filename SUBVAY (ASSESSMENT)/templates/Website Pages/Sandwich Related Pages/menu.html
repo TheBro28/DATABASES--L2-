@@ -1,3 +1,4 @@
+{% extends "Layout.html" %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,15 +22,18 @@
     <title>Sandwich Menu</title>
 </head>
 <body>
-   <!--Shared Header Bar-->
-   <!--Shared Navbar-->
-   {% block body %}
-   {% endblock %}
 
 
-    <nav>
+
+    <nav class="w3-bar w3-black">
+        <a href="#" class="w3-bar-item w3-button">Home</a>
+        <a href="#" class="w3-bar-item w3-button">Link 1</a>
+        <a href="#" class="w3-bar-item w3-button">Link 2</a>
+        <a href="#" class="w3-bar-item w3-button">Link 3</a>
+    </nav>
+</div>
         <!--This is the navigation bar, it will appear at the very top of the screen and contain links to all other main pages-->
-
+        
 
     </nav>
 
@@ -56,5 +60,7 @@
 
     </footer>
         
+    {% block body %}
+    {% endblock %}
 </body>
 </html>
