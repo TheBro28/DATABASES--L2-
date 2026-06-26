@@ -19,17 +19,21 @@
         <!--This code links a custom stylesheet and w3schools stylesheet to layout-->
         <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,0,0&icon_names=account_circle" />
 
 
-    <title>{% Block Title %} {% Endblock %}</title>
+    <title>{% block title %} {% endblock %}</title>
 </head>
+
 
 
 <body>
 
-{% Block Nav %} {% Endblock %}
+    
+{% block nav %} {% endblock %}  
 
-{% Block Content %} {% Endblock %}
+{% block content %} 
+{% endblock %}
 
 <footer>
     <h3 class="ws"><strong>Contact Us: help@subvaysandwiches.co.nz</strong></h3>

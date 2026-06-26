@@ -1,9 +1,53 @@
 nav {
-    height: 109px;
-    background-color: #242424;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #242424; /* dark background for nav */
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 109px;
+}
+
+.nav-left, .nav-right {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+.nav-link:hover {
+  background-color: #444;
+  border-radius: 4px;
+}
+
+/* Special styles for checkout button */
+.checkout {
+  color: red;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkout:hover {
+  color: #fff;
+}
+
+.material-symbols-outlined {
+    height: 42px;
+    width: 42px;
+
 }
 
 /*------------------------------ Seperator Line ------------------------------*/
+
 
 footer {
     height: 109px;
@@ -15,7 +59,7 @@ footer {
 
 /* Fixes the image "background.png" to the body of all pages */
 body {
-    background-image: url('Images/background.png');
+    background-image: url('static/Images/background.png');
     background-size: cover; /* makes the image cover the entire background */
     background-position: center; /* centers the image */
     background-repeat: no-repeat; /* prevents image occuring multiple times */
@@ -71,6 +115,8 @@ h6 { font-size: 15px; }
 
 /*------------------------------ Seperator Line ------------------------------*/
 
+/* Grid Layouts */
+
 .three-column {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -83,8 +129,27 @@ h6 { font-size: 15px; }
     gap: 25em;
 }
 
-img {
+/*------------------------------ Seperator Line ------------------------------*/
+
+/* Image options */
+
+.SoTD {
+    padding-left: 55px;
 
 }
 
 
+/* Footer Content */
+footer {
+  background-color: #222;
+  padding: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-top: 40px;
+}
+
+.banner {
+width: 1980px;
+
+}

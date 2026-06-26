@@ -22,26 +22,39 @@
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
 
     -->
-    
-{% Block Title %}Home{% Endblock %}
+<head>
+{% block title %}Home{% endblock %}
+</head>
+{% block nav %} 
 
-{% Block Nav %} 
-    <nav class="w3-bar w3-black">
-        <a href="#" class="w3-bar-item w3-button">Home</a>
-        <a href="#" class="w3-bar-item w3-button">Link 1</a>
-        <a href="#" class="w3-bar-item w3-button">Link 2</a>
-        <a href="#" class="w3-bar-item w3-button">Link 3</a>
-    </nav>
-{% Endblock %}
+<nav>
+  <div class="nav-left">
+    <a href="#" class="nav-link">Home</a>
+    <a href="#" class="nav-link">Menu</a>
+    <a href="#" class="nav-link">Offers</a>
+    <a href="#" class="nav-link">Our History</a>
+  </div>
+  <div class="nav-right">
+    <a href="#" class="checkout">Checkout</a>
+    <span class="material-symbols-outlined">account_circle</span>
+    <a href="#" class="nav-link">Sign in</a>
+  </div>
+</nav>
 
-{% Block Content %}
+{% endblock %}
+
+{% block content %}
+<body>
+
+<header>
+    <img class="banner" src="static/Images/banner_img.png" alt="Banner image for website with pictures of avaliable subs and description of the business">
+</header>
 
 <div class="2-column"></div>
 <div class="w3-card-4"></div>
 
-<header>
-<img src="static/Images/banner_img.png" alt="Banner image for website with pictures of avaliable subs and description of the business">
-
-</header>
-
-{% Endblock %}
+<main>
+    <img class="SoTD" src="static/Images/SoTD.png" alt="Sub of the day offer information">
+</main>
+</body>
+{% endblock %}
