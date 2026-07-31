@@ -31,3 +31,32 @@ def home():
   return render_template("index.php")
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+    #DATABASE LOGIN HANDLING (TO BE MODIFIED)
+    #Log In data handling
+@app.route('/log-in')
+def login():
+    return render_template('login.html',warning=None)
+
+@app.post('/get_login_data')
+def handle_login_data():
+    username = str(request.form['username'])
+    password = str(request.form['password'])
+
+    verify = verification(username,password)
+    if verify:
+        session['user'] = username
+        return redirect('/')
+    else: 
+        return render_template('login.html',warning=True)
+    
+def verification(username, password):
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    query = f"select password from user where name = '{username}';"
+    cursor.execute(query)
+    actual_password = cursor.fetchone()
+    db.close()
+    actual_password = actual_password[0] if actual_password else False
+    return password == actual_password 
