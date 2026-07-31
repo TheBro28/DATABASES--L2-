@@ -54,8 +54,8 @@ select {
 }
 
 button { 
-    width: 100%
-    padding 12px;
+    width: 100%;
+    padding: 12px;
     background: #7494ec;
     border-radius: 6px;
     border: none;
