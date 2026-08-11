@@ -1,3 +1,5 @@
+{% extends "layout.html" %} index {% block title %} {% endblock %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

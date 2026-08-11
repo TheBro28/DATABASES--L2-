@@ -29,8 +29,38 @@ def home():
   sql = ""
   results = query_db(sql)
   return render_template("index.php")
-if __name__ == "__main__":
-    app.run(debug=True)
+
+@app.route('/')
+def menu():
+    sql = ""
+    results = query_db(sql)
+    return render_template("menu.html")
+
+@app.route('/')
+def offers():
+    sql = ""
+    results = query_db(sql)
+    return render_template("offers.html")
+
+@app.route('/')
+def history():
+    sql = ""
+    results = query_db(sql)
+    return render_template("history.html")
+
+@app.route('/')
+def checkout():
+    sql = ""
+    results = query_db(sql)
+    return render_template("checkout.html")
+
+@app.route('/')
+def signin():
+    sql = ""
+    results = query_db(sql)
+    return render_template("signin.html")
+
+
 
 
     #DATABASE LOGIN HANDLING (TO BE MODIFIED)
@@ -60,3 +90,6 @@ def verification(username, password):
     db.close()
     actual_password = actual_password[0] if actual_password else False
     return password == actual_password 
+
+if __name__ == "__main__":
+    app.run(debug=True)
