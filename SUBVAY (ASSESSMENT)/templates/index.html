@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}Home - Subway Test{% endblock %}
+
+{% block content %}
+<body>
+<div class="container mt-5">
+    <div class="alert alert-success text-center shadow-sm" role="alert">
+        <h4 class="alert-heading fw-bold">Flask is Working!</h4>
+        <p class="mb-0">If you can see this box and the navigation bar above, your template engine is rendering perfectly.</p>
+    </div>
+
+    <!-- Test Feature Cards -->
+    <div class="row mt-4 g-4">
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-success">Layout Check</h5>
+                    <p class="card-text text-muted">Your Bootstrap framework is loaded correctly. This card should be sitting neatly inside the page grid system beneath your navbar.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-primary">Session & Auth Check</h5>
+                    <p class="card-text text-muted">
+                        {% if session.get('user') %}
+                            You are currently logged in as: <strong class="text-dark">{{ session['user'] }}</strong>
+                        {% else %}
+                            You are browsing as a guest. Click <strong>Sign In</strong> in the navbar to test your login form panel.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+{% endblock %}

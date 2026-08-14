@@ -1,16 +1,18 @@
-from flask import Flask, g, render_template
+from flask import Flask, g, render_template, request, redirect, session
 import sqlite3
 
 DATABASE = 'subvay(3).db'
 
-#initialise app
+# Initialise app
 app = Flask(__name__)
+# A secret key is required to use Flask sessions for logging in
+app.secret_key = '4a9f83b21cde567890abcdef1234567890abcdef12345678' 
 
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
-        return db
+    return db
 
 @app.teardown_appcontext
 def close_connection(exception):
@@ -22,72 +24,59 @@ def query_db(query, args=(), one=False):
     cur = get_db().execute(query, args)
     rv = cur.fetchall()
     cur.close()
-    return(rv[0] if rv else None) if one else rv
+    return (rv[0] if rv else None) if one else rv
+
+# --- ROUTE PATHS --- #
 
 @app.route('/')
 def home():
-  sql = ""
-  results = query_db(sql)
-  return render_template("index.php")
+    return render_template("index.html") 
 
-@app.route('/')
+@app.route('/menu')
 def menu():
     return render_template("menu.html")
 
-@app.route('/')
+@app.route('/offers')
 def offers():
-    sql = ""
-    results = query_db(sql)
     return render_template("offers.html")
 
-@app.route('/')
+@app.route('/history')
 def history():
-    sql = ""
-    results = query_db(sql)
     return render_template("history.html")
 
-@app.route('/')
+@app.route('/checkout')
 def checkout():
-    sql = ""
-    results = query_db(sql)
     return render_template("checkout.html")
 
-@app.route('/')
+@app.route('/signin')
 def signin():
-    sql = ""
-    results = query_db(sql)
     return render_template("signin.html")
 
+# --- DATABASE LOGIN HANDLING  --- #
 
-
-
-    #DATABASE LOGIN HANDLING (TO BE MODIFIED)
-    #Log In data handling
 @app.route('/log-in')
 def login():
-    return render_template('login.html',warning=None)
+    return render_template('login.html', warning=None)
 
 @app.post('/get_login_data')
 def handle_login_data():
-    username = str(request.form['username'])
+    email = str(request.form['email'])
     password = str(request.form['password'])
-
-    verify = verification(username,password)
-    if verify:
-        session['user'] = username
-        return redirect('/')
-    else: 
-        return render_template('login.html',warning=True)
     
-def verification(username, password):
-    db = sqlite3.connect(DATABASE)
-    cursor = db.cursor()
-    query = f"select password from user where name = '{username}';"
-    cursor.execute(query)
-    actual_password = cursor.fetchone()
-    db.close()
-    actual_password = actual_password[0] if actual_password else False
-    return password == actual_password 
+    verify = verification(email, password)
+    if verify:
+        session['user'] = email
+        return redirect('/')
+    else:
+        return render_template('login.html', warning=True)
+
+def verification(email, password):
+    query = "SELECT password FROM user WHERE email = ?"
+    actual_password = query_db(query, (email,), one=True)
+    
+    if actual_password:
+        return password == actual_password[0]
+    return False
 
 if __name__ == "__main__":
     app.run(debug=True)

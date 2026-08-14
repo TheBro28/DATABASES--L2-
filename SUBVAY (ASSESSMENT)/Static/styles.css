@@ -1,25 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+@import url('https://googleapis.com');
 
+/* --- GLOBAL STYLES --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Poppins", serif;
+    font-family: "Poppins", sans-serif;
 }
 
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
     background: linear-gradient(to right, #e2e2e2, #c9d6ff);
     color: #333;
+}
+
+/* --- LOGIN & REGISTER PAGE CENTERING --- */
+.login-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 56px); 
+    width: 100%;
 }
 
 .container {
     margin: 0 15px;
 }
 
+/* --- FORM BOX VISIBILITY CONTROLS --- */
 .form-box {
     width: 100%;
     max-width: 450px;
@@ -27,13 +35,14 @@ body {
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: none;
+    display: block;
 }
 
 .form-box.active {
     display: block;
 }
 
+/* --- FORM ELEMENTS STYLING --- */
 h2 {
     font-size: 34px;
     text-align: center;
@@ -68,9 +77,10 @@ button {
 }
 
 button:hover {
-    background:#6885d3;
+    background: #6885d3;
 }
 
+/* --- PARAGRAPH TEXT & NAVIGATION LINKS --- */
 p {
     font-size: 14.5px;
     text-align: center;
@@ -83,5 +93,5 @@ p a {
 }
 
 p a:hover {
-    text-decoration: underline
+    text-decoration: underline;
 }
