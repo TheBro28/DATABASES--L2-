@@ -32,8 +32,6 @@ def home():
 
 @app.route('/')
 def menu():
-    sql = ""
-    results = query_db(sql)
     return render_template("menu.html")
 
 @app.route('/')
