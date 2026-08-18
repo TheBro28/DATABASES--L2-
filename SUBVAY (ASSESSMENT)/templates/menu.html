@@ -1,17 +1,7 @@
-{% extends "layout.html" %} Menu {% block title %} {% endblock %}
+{% extends "layout.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
-    <link rel="sylesheet"href="https://www.w3schools.com/w3css/4/w3.css">
-    <title>Menu</title>
-</head>
-<body>
+{% block content %}
     <h1>MENU PAGE</h1>
-
 
 <h2>Our Sandwich Menu</h2>
 
@@ -32,5 +22,4 @@
     <p>The menu is currently empty.</p>
 {% endif %}
 
-</body>
-</html>
+{% endblock %}
