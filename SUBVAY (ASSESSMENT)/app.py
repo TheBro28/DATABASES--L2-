@@ -26,15 +26,33 @@ def query_db(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
+# --- MENU CARD RENDERING --- #
+
+@app.route('/menu', methods=['GET'])
+def menu():
+    user = session.get('user')
+    
+    # Connect to database and fetch all sandwiches
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    
+    # Query all data selecting name, image_url, and price
+    query = "SELECT name, image_url, price FROM PRE_SANDWICH"
+    cursor.execute(query)
+    all_sandwiches = cursor.fetchall()
+    db.close()
+        
+    return render_template(
+        'menu.html', 
+        all_sandwiches=all_sandwiches, 
+        user=user
+    )
+
 # --- ROUTE PATHS --- #
 
 @app.route('/')
 def home():
     return render_template("index.html") 
-
-@app.route('/menu')
-def menu():
-    return render_template("menu.html")
 
 @app.route('/offers')
 def offers():

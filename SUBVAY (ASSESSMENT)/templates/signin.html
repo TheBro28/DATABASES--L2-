@@ -25,7 +25,7 @@
 
     <!-- REGISTER CONTAINER -->
     <div class="container form-box" id="register-form">
-        <form action="{{ url_for('handle_register_data') }}" method="POST">
+        <form action="/get_login_data" method="POST">
             <h2>Register</h2>
             <input type="text" name="firstname" placeholder="First name" required>
             <input type="text" name="lastname" placeholder="Last name" required>

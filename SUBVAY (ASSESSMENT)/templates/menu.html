@@ -11,5 +11,26 @@
 </head>
 <body>
     <h1>MENU PAGE</h1>
+
+
+<h2>Our Sandwich Menu</h2>
+
+{% if all_sandwiches %}
+    <div class="sandwich-list">
+    {% for sandwich in all_sandwiches %}
+        <div class="sandwich-card">
+            <!-- Index 1: image_url -->
+            <img src="{{ sandwich[1] }}" alt="{{ sandwich[0] }}" width="150">
+            <!-- Index 0: name -->
+            <h4>{{ sandwich[0] }}</h4>
+            <!-- Index 2: price -->
+            <p>Price: ${{ "%.2f"|format(sandwich[2]) }}</p>
+        </div>
+    {% endfor %}
+    </div>
+{% else %}
+    <p>The menu is currently empty.</p>
+{% endif %}
+
 </body>
 </html>
