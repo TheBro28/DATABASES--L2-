@@ -32,12 +32,10 @@ def query_db(query, args=(), one=False):
 def menu():
     user = session.get('user')
     
-    # Connect to database and fetch all sandwiches
     db = sqlite3.connect(DATABASE)
     cursor = db.cursor()
     
-    # Query all data selecting name, image_url, and price
-    query = "SELECT name, image_url, price FROM PRE_SANDWICH"
+    query = "SELECT ID, name, description, image_url, price FROM PRE_SANDWICH"
     cursor.execute(query)
     all_sandwiches = cursor.fetchall()
     db.close()
@@ -69,6 +67,17 @@ def checkout():
 @app.route('/signin')
 def signin():
     return render_template("signin.html")
+
+@app.route('/sandwich/<int:id>')
+def sandwich(id):
+    # Fetch a single sandwich matching the ID
+    query = "SELECT ID, name, description, image_url, price FROM PRE_SANDWICH WHERE ID = ?"
+    sandwich = query_db(query, (id,), one=True)
+    
+    if sandwich is None:
+        return "Sandwich not found", 404
+        
+    return render_template("sandwich.html", sandwich=sandwich)
 
 # --- DATABASE LOGIN HANDLING  --- #
 

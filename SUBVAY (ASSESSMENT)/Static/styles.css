@@ -1,6 +1,6 @@
 @import url('https://googleapis.com');
 
-/* --- GLOBAL STYLES --- */
+/* --- GLOBAL STYLES (TO BE CHANGED) --- */
 * {
     margin: 0;
     padding: 0;
@@ -94,4 +94,55 @@ p a {
 
 p a:hover {
     text-decoration: underline;
+}
+
+/* --- MENU LAYOUT & GRID SYSTEM --- */
+.three-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* 3 horizontal columns */
+    gap: 2em;
+}
+
+/* removes default styles from links */
+.sandwich-list a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* --- SANDWICH PRODUCT CARDS --- */
+.sandwich-card {
+    background-color: #ffffff;
+    isolation: isolate;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Blends out white image backgrounds onto the white card surface */
+.sandwich-card img {
+    mix-blend-mode: multiply;
+    filter: contrast(1.05);
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    display: block;
+    margin: 0 auto 15px auto;
+}
+
+/* spacing inside cards */
+.sandwich-card h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.sandwich-card .price-text {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 0;
 }
