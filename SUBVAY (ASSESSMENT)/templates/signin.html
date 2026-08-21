@@ -1,37 +1,58 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<!-- W3schools styles -->
 <link rel="stylesheet" href="https://w3schools.com">
 
+<!-- Main Page Wrapper -->
 <div class="login-page-wrapper">
 
-    <!-- LOGIN CONTAINER -->
+    <!-- =========================================================
+         1. LOGIN BOX CONTAINER
+         ========================================================= -->
+
     <div class="container form-box active" id="login-form">
+        <!-- Sends login credentials -->
         <form action="{{ url_for('handle_login_data') }}" method="POST">
             <h2>Login</h2>
             
+            <!-- Conditional warning alert block for failed database password verification matches -->
             {% if warning %}
                 <p style="color: #dc3545; font-weight: 500; text-align: center; margin-bottom: 15px;">Invalid email or password.</p>
             {% endif %}
 
+            <!-- User Login Authorisation Inputs -->
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
+            
+            <!-- Login Submission Button -->
             <button type="submit" name="login">Login</button>
+            
+            <!-- Switch to register form -->
             <p>Don't have an account? <a href="#" onclick="showForm('register-form')">Register</a></p>
         </form>
     </div>
 
-    <!-- REGISTER CONTAINER -->
+    <!-- =========================================================
+         2. REGISTER BOX CONTAINER
+         ========================================================= -->
+
     <div class="container form-box" id="register-form">
+        <!-- Registration form endpoint -->
         <form action="/get_login_data" method="POST">
             <h2>Register</h2>
+            
+            <!-- Imputs for customer registration information -->
             <input type="text" name="firstname" placeholder="First name" required>
             <input type="text" name="lastname" placeholder="Last name" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="text" name="phonenumber" placeholder="Phone number" required>
+            
+            <!-- Password Security -->
             <input type="password" name="password" placeholder="Password" required>
             <input type="password" name="conpassword" placeholder="Confirm password" required>
             
+            <!-- Prefered Store Dropdown -->
             <select name="prefstore" required>
                 <option value="">--Select Preferred Store--</option>
                 <option value="176 Williams Street, Store 1">176 Williams Street, Store 1</option>
@@ -61,6 +82,7 @@
                 <option value="174a Mawhera Quay, Store 25">174a Mawhera Quay, Store 25</option>
             </select>
             
+            <!-- Gender Selection Dropdown Menu -->
             <select name="gender" required>
                 <option value="">--Select Gender--</option>
                 <option value="Male">Male</option>
@@ -68,12 +90,16 @@
                 <option value="Other">Other</option>
             </select>
             
+            <!-- Registration Submission Button -->
             <button type="submit" name="Register">Register</button>
+            
+            <!-- Switch to Log in form -->
             <p>Already have an account? <a href="#" onclick="showForm('login-form')">Login</a></p>
         </form>
     </div>
 
 </div>
 
+<!-- Connects to javascript that shows and hides form boxes -->
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 {% endblock %}

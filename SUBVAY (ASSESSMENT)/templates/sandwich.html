@@ -1,9 +1,27 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<div class="container detail-page-wrapper">
+<!--Back to menu button with left arrow-->
+    <p><a href="{{ url_for('menu') }}">&larr; Back to Menu</a></p>
 
-    {% block nav %}
-    {% endblock %}
-
-
+    <div class="detail-card">
+        <!-- Index 3: Image URL -->
+        <img class="detail-image" src="{{ sandwich[3] }}" alt="{{ sandwich[1] }}">
+        
+        <div class="detail-info">
+            <!-- Index 1: Name -->
+            <h1>{{ sandwich[1] }}</h1>
+            
+            <!-- Index 4: Price formatted -->
+            <h3 class="detail-price">Price: ${{ "%.2f"|format(sandwich[4]) }}</h3>
+            
+            <!-- Index 2: Description -->
+            <p class="detail-description">{{ sandwich[2] }}</p>
+            
+            <!-- Future purchase interactions can map here -->
+            <button class="add-to-cart-btn">Add to cart</button>
+        </div>
+    </div>
+</div>
 {% endblock %}
