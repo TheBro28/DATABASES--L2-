@@ -6,3 +6,4 @@ function showForm(formId) {
     // Find the specific form that was clicked and unhide it by adding the 'active' status back
     document.getElementById(formId).classList.add("active");
 }
+    

@@ -1,9 +1,9 @@
 # Import the tools needed to build the website and handle data
 from flask import Flask, g, render_template, request, redirect, session, url_for
-import sqlite3
+import sqlite3, hashlib
 
 # Defines the database as a constant
-DATABASE = 'subvay(3).db'
+DATABASE = 'subvay.db'
 
 # Create and set up the website application
 app = Flask(__name__)
@@ -30,6 +30,53 @@ def query_db(query, args=(), one=False):
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
+
+# Converts a plain text password into a sequre one
+def hash_password(password):
+    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+
+def migrate_passwords():
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
+    
+    # Retrieves the unique ID and current password for every customer account
+    cursor.execute("SELECT ID, password FROM CUSTOMER")
+    users = cursor.fetchall()
+    
+    # Loops through each customer
+    for user_id, password in users:
+        # Checks if the password length is not 64 characters (Type of Hash is 64 characters)
+        if len(password) != 64:
+            # Converts text password into a secure hashed string
+            hashed = hash_password(password)
+            # Updates the database to overwrite current unhashed passwords
+            cursor.execute("UPDATE CUSTOMER SET password = ? WHERE ID = ?", (hashed, user_id))
+            
+    # Saves updates to the database permanently
+    db.commit()
+    db.close()
+
+
+@app.context_processor
+def inject_user_name():
+    # Checks if a user's email is currently saved
+    email = session.get('user')
+    
+    # If a user is logged in, look up their name in the database
+    if email:
+        query = "SELECT firstname FROM CUSTOMER WHERE email = ?"
+        db = sqlite3.connect(DATABASE)
+        cursor = db.cursor()
+        cursor.execute(query, (email,))
+        result = cursor.fetchone()
+        db.close()
+        
+        # If an account is found, pass their first name as 'user_name'
+        if result:
+            return dict(user_name=result[0])
+            
+    # If no one is logged in, pass None so the templates know to show the "Sign In" button instead
+    return dict(user_name=None)
 
 
 # --- ROUTE PATHS --- #
@@ -59,6 +106,16 @@ def checkout():
 def signin():
     return render_template("signin.html")
 
+# Account details Page (Only avaliable if the user is logged in)
+@app.route('/account')
+def account_details():
+    if 'user' not in session:
+        return redirect('/signin')
+    email = session['user']
+    query = "SELECT firstname, lastname, ph_number, email FROM CUSTOMER WHERE email = ?"
+    customer_info = query_db(query, (email,), one=True)
+    return render_template("account.html", customer=customer_info)
+
 # --- MENU CARD RENDERING --- #
 
 # Menu page
@@ -86,7 +143,7 @@ def menu():
 
 # --- SANDWICH PAGE RENDERING --- #
 
-# Single sandwich page: opens when you click a specific sandwich
+# Single sandwich page opens when you click a specific sandwich
 @app.route('/sandwich/<int:id>')
 def sandwich(id):
     # Search the database for the single sandwich that matches the clicked ID
@@ -114,7 +171,7 @@ def handle_login_data():
     email = str(request.form['email'])
     password = str(request.form['password'])
     
-    # Check if the credentials match our saved customer accounts
+    # Check if the email and password are in database
     verify = verification(email, password)
     if verify:
         # Log them in and redirect them to the home page
@@ -124,17 +181,18 @@ def handle_login_data():
         # Reload the login page with a red error warning text
         return render_template('login.html', warning=True)
 
-# Check that cross-references passwords with the database
+# Check password and email
 def verification(email, password):
     # Find the password belonging to the typed email address
-    query = "SELECT password FROM user WHERE email = ?"
+    query = "SELECT password FROM CUSTOMER WHERE email = ?"
     actual_password = query_db(query, (email,), one=True)
     
     # Compare the user's typed password with the actual saved password
     if actual_password:
-        return password == actual_password[0]
+        return hash_password(password) == actual_password[0]
     return False
 
 # Starts up the website server
 if __name__ == "__main__":
+    migrate_passwords()
     app.run(debug=True)

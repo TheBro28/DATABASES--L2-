@@ -36,15 +36,25 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('checkout') }}">Checkout</a>
                     </li>
+                    
+                    <!-- Dynamic Sign In -->
+                    {% if session.user and user_name %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('account_details') }}">{{ user_name }}</a>
+                    </li>
+                    {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="/signin">Sign In</a>
                     </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </div>
 </nav>
 {% endblock %}
+
+
 
 <!-- content placeholder -->
 {% block content %}
