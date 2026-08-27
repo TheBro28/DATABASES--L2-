@@ -17,6 +17,7 @@ def get_db():
         db = g._database = sqlite3.connect(DATABASE)
     return db
 
+
 # Automatically close database connection when page finishes loading
 @app.teardown_appcontext
 def close_connection(exception):
@@ -56,7 +57,6 @@ def migrate_passwords():
     db.commit()
     db.close()
 
-
 @app.context_processor
 def inject_user_name():
     # Checks if a user's email is currently saved
@@ -77,7 +77,6 @@ def inject_user_name():
             
     # If no one is logged in, pass None so the templates know to show the "Sign In" button instead
     return dict(user_name=None)
-
 
 # --- ROUTE PATHS --- #
 
@@ -101,20 +100,10 @@ def history():
 def checkout():
     return render_template("checkout.html")
 
-# Sign in Page
+# Sign in / Register Page
 @app.route('/signin')
 def signin():
-    return render_template("signin.html")
-
-# Account details Page (Only avaliable if the user is logged in)
-@app.route('/account')
-def account_details():
-    if 'user' not in session:
-        return redirect('/signin')
-    email = session['user']
-    query = "SELECT firstname, lastname, ph_number, email FROM CUSTOMER WHERE email = ?"
-    customer_info = query_db(query, (email,), one=True)
-    return render_template("account.html", customer=customer_info)
+    return render_template("signin.html", warning=None, register_warning=None, show_register=False)
 
 # --- MENU CARD RENDERING --- #
 
@@ -159,11 +148,6 @@ def sandwich(id):
 
 # --- DATABASE LOGIN HANDLING  --- #
 
-# Login box
-@app.route('/log-in')
-def login():
-    return render_template('login.html', warning=None)
-
 # Processes the data when a user types their details and clicks "Login"
 @app.post('/get_login_data')
 def handle_login_data():
@@ -178,8 +162,8 @@ def handle_login_data():
         session['user'] = email
         return redirect('/')
     else:
-        # Reload the login page with a red error warning text
-        return render_template('login.html', warning=True)
+        # Reload the sign-in page with a red error warning text on the login box
+        return render_template('signin.html', warning=True, register_warning=None, show_register=False)
 
 # Check password and email
 def verification(email, password):
@@ -192,7 +176,70 @@ def verification(email, password):
         return hash_password(password) == actual_password[0]
     return False
 
+# --- DATABASE REGISTRATION HANDLING --- #
+
+# Finds the store's ID number that matches the name chosen in the dropdown
+def get_store_id(store_name):
+    query = "SELECT ID FROM STORES WHERE name = ?"
+    result = query_db(query, (store_name,), one=True)
+    return result[0] if result else None
+
+# Finds the gender's ID number that matches the option chosen in the dropdown
+def get_gender_id(gender_name):
+    query = "SELECT ID FROM GENDER WHERE name = ?"
+    result = query_db(query, (gender_name,), one=True)
+    return result[0] if result else None
+
+# Processes the data when a user submits the registration form
+@app.post('/handle_register_data')
+def handle_register_data():
+    # Read the details typed into the registration form boxes
+    firstname = request.form['firstname']
+    lastname = request.form['lastname']
+    email = request.form['email']
+    phonenumber = request.form['phonenumber']
+    password = request.form['password']
+    confirm_password = request.form['conpassword']
+    prefstore_name = request.form['prefstore']
+    gender_name = request.form['gender']
+
+    # Check if the passwords match
+    if password != confirm_password:
+        return render_template('signin.html', warning=None, register_warning="Passwords do not match.", show_register=True)
+
+    # Check if an account with this email already exists
+    existing = query_db("SELECT ID FROM CUSTOMER WHERE email = ?", (email,), one=True)
+    if existing:
+        return render_template('signin.html', warning=None, register_warning="An account with that email already exists.", show_register=True)
+
+    # Convert the chosen store name into its matching ID from the STORES table
+    store_id = get_store_id(prefstore_name)
+    if store_id is None:
+        return render_template('signin.html', warning=None, register_warning="Please select a valid store.", show_register=True)
+
+    # Convert the chosen gender name into its matching ID from the GENDER table
+    gender_id = get_gender_id(gender_name)
+    if gender_id is None:
+        return render_template('signin.html', warning=None, register_warning="Please select a valid gender.", show_register=True)
+
+    # Hash the password before storing it
+    hashed = hash_password(password)
+
+    # Insert the new customer with related IDs
+    db = get_db()
+    db.execute(
+        "INSERT INTO CUSTOMER (firstname, lastname, email, ph_number, password, pref_store, gender) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (firstname, lastname, email, phonenumber, hashed, store_id, gender_id)
+    )
+    db.commit()
+
+    # Log the new user in immediately and send them home
+    session['user'] = email
+    return redirect('/')
+
 # Starts up the website server
 if __name__ == "__main__":
     migrate_passwords()
     app.run(debug=True)
+	

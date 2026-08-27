@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <!-- Dynamic page title -->
@@ -14,42 +13,37 @@
 
 <!-- Navigation bar block -->
 {% block nav %}
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
-        <!-- Collapsible menu content -->
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="w-100">
-                <!-- links -->
-                <ul class="navbar-nav d-flex flex-row justify-content-around mb-0 w-100">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/menu">Menu</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('offers') }}">Offers</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('history') }}">History</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('checkout') }}">Checkout</a>
-                    </li>
-                    
-                    <!-- Dynamic Sign In -->
-                    {% if session.user and user_name %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('account_details') }}">{{ user_name }}</a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/signin">Sign In</a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
+        <!-- links -->
+        <ul class="navbar-nav d-flex flex-row justify-content-around mb-0 w-100">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/menu">Menu</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('offers') }}">Offers</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('history') }}">History</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('checkout') }}">Checkout</a>
+            </li>
+            
+            <!-- Dynamic Sign In -->
+            {% if session.user and user_name %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('account_details') }}">{{ user_name }}</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="/signin">Sign In</a>
+            </li>
+            {% endif %}
+        </ul>
     </div>
 </nav>
 {% endblock %}
