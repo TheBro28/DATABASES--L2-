@@ -17,7 +17,6 @@ def get_db():
         db = g._database = sqlite3.connect(DATABASE)
     return db
 
-
 # Automatically close database connection when page finishes loading
 @app.teardown_appcontext
 def close_connection(exception):
@@ -203,7 +202,7 @@ def handle_register_data():
     prefstore_name = request.form['prefstore']
     gender_name = request.form['gender']
 
-    # Check if the passwords match
+    # Check Passwords
     if password != confirm_password:
         return render_template('signin.html', warning=None, register_warning="Passwords do not match.", show_register=True)
 
@@ -225,7 +224,7 @@ def handle_register_data():
     # Hash the password before storing it
     hashed = hash_password(password)
 
-    # Insert the new customer with related IDs
+    # Insert the new customer, storing the looked-up IDs rather than the raw text
     db = get_db()
     db.execute(
         "INSERT INTO CUSTOMER (firstname, lastname, email, ph_number, password, pref_store, gender) "
@@ -236,6 +235,30 @@ def handle_register_data():
 
     # Log the new user in immediately and send them home
     session['user'] = email
+    return redirect('/')
+
+# Account details Page (Only avaliable if the user is logged in)
+@app.route('/account')
+def account_details():
+    if 'user' not in session:
+        return redirect('/signin')
+    email = session['user']
+    # Joins the customer's store and gender IDs against their name tables
+    query = """
+        SELECT CUSTOMER.ID, CUSTOMER.firstname, CUSTOMER.lastname, CUSTOMER.ph_number,
+               CUSTOMER.email, STORES.name, GENDER.name
+        FROM CUSTOMER
+        LEFT JOIN STORES ON CUSTOMER.pref_store = STORES.ID
+        LEFT JOIN GENDER ON CUSTOMER.gender = GENDER.ID
+        WHERE CUSTOMER.email = ?
+    """
+    customer_info = query_db(query, (email,), one=True)
+    return render_template("account.html", customer=customer_info)
+
+# Logs the user out and sends them back to the home page
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
     return redirect('/')
 
 # Starts up the website server
