@@ -7,7 +7,7 @@ DATABASE = 'subvay.db'
 
 # Create and set up the website application
 app = Flask(__name__)
-# security password that protects user logins from hackers
+# security password that protects users logins from hackers
 app.secret_key = '4a9f83b21cde567890abcdef1234567890abcdef12345678' 
 
 # Open connection to database
@@ -56,6 +56,7 @@ def migrate_passwords():
     db.commit()
     db.close()
 
+
 @app.context_processor
 def inject_user_name():
     # Checks if a user's email is currently saved
@@ -76,6 +77,7 @@ def inject_user_name():
             
     # If no one is logged in, pass None so the templates know to show the "Sign In" button instead
     return dict(user_name=None)
+
 
 # --- ROUTE PATHS --- #
 
@@ -104,6 +106,22 @@ def checkout():
 def signin():
     return render_template("signin.html", warning=None, register_warning=None, show_register=False)
 
+# --- SANDWICH PAGE RENDERING --- #
+
+# Single sandwich page opens when you click a specific sandwich
+@app.route('/sandwich/<int:id>')
+def sandwich(id):
+    # Search the database for the single sandwich that matches the clicked ID
+    query = "SELECT ID, name, description, image_url, price FROM PRE_SANDWICH WHERE ID = ?"
+    sandwich = query_db(query, (id,), one=True)
+    
+    # Error message if the sandwich ID doesn't exist
+    if sandwich is None:
+        return "Sandwich not found", 404
+        
+    # Render single sandwich's details on screen
+    return render_template("sandwich.html", sandwich=sandwich)
+
 # --- MENU CARD RENDERING --- #
 
 # Menu page
@@ -120,30 +138,26 @@ def menu():
     query = "SELECT ID, name, description, image_url, price FROM PRE_SANDWICH"
     cursor.execute(query)
     all_sandwiches = cursor.fetchall()
+
+    # Finds the cheapest bread and cheese to work out a starting price for a custom sub
+    cheapest_bread = cursor.execute("SELECT MIN(price) FROM BREAD").fetchone()[0]
+    cheapest_cheese = cursor.execute("SELECT MIN(price) FROM CHEESE").fetchone()[0]
+    custom_starting_price = cheapest_bread + cheapest_cheese
+
     db.close()
         
     # Send the sandwich information layout
     return render_template(
         'menu.html', 
         all_sandwiches=all_sandwiches, 
-        user=user
+        user=user,
+        custom_starting_price=custom_starting_price
     )
 
-# --- SANDWICH PAGE RENDERING --- #
-
-# Single sandwich page opens when you click a specific sandwich
-@app.route('/sandwich/<int:id>')
-def sandwich(id):
-    # Search the database for the single sandwich that matches the clicked ID
-    query = "SELECT ID, name, description, image_url, price FROM PRE_SANDWICH WHERE ID = ?"
-    sandwich = query_db(query, (id,), one=True)
-    
-    # Error message if the sandwich ID doesn't exist
-    if sandwich is None:
-        return "Sandwich not found", 404
-        
-    # Render single sandwich's details on screen
-    return render_template("sandwich.html", sandwich=sandwich)
+# Custom sandwich builder page
+@app.route('/custom-sandwich')
+def custom_sandwich():
+    return render_template("custom_sandwich.html")
 
 # --- DATABASE LOGIN HANDLING  --- #
 
@@ -202,7 +216,7 @@ def handle_register_data():
     prefstore_name = request.form['prefstore']
     gender_name = request.form['gender']
 
-    # Check Passwords
+    # Passwords must match before doing anything else
     if password != confirm_password:
         return render_template('signin.html', warning=None, register_warning="Passwords do not match.", show_register=True)
 
@@ -265,4 +279,3 @@ def logout():
 if __name__ == "__main__":
     migrate_passwords()
     app.run(debug=True)
-	

@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="login-page-wrapper">
+
+    <div class="container form-box active" id="account-box">
+        <!-- Top section showing the customer's name and email -->
+        <h2>{{ customer[1] }} {{ customer[2] }}</h2>
+        <p style="text-align: center; margin-bottom: 20px;">{{ customer[4] }}</p>
+
+        <hr>
+
+        <!-- Customer's stored details pulled from the database -->
+        <p><strong style="color: #dc3545;">Phone Number:</strong> {{ customer[3] }}</p>
+        <p><strong style="color: #dc3545;">Gender:</strong> {{ customer[6] }}</p>
+        <p><strong style="color: #dc3545;">Preferred Store:</strong> {{ customer[5] }}</p>
+
+        <hr>
+
+        <!-- Sends the user to the logout route, ending their session -->
+        <form action="{{ url_for('logout') }}" method="GET">
+            <button type="submit" style="background: #dc3545;">Log Out</button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
