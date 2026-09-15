@@ -275,6 +275,10 @@ def logout():
     session.pop('user', None)
     return redirect('/')
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
+
 # Starts up the website server
 if __name__ == "__main__":
     migrate_passwords()
