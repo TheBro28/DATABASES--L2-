@@ -106,7 +106,8 @@ p a:hover {
 /* --- MENU LAYOUT & GRID SYSTEM --- */
 .three-column {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    /* minmax(0, 1fr) stops an oversized card from stretching its whole column */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 2em;
     padding: 20px;
 }
@@ -224,4 +225,10 @@ p a:hover {
     border: none;
     margin: 0 auto 40px auto;
     opacity: 0.8;
+}
+
+.custom-sandwich-icon {
+    font-size: 80px;
+    color: #7494ec;
+    margin-bottom: 15px;
 }

@@ -1,8 +1,25 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<h2>Your Order Summary</h2>
+<table>
+    <tr>
+        <th>Type</th>
+        <th>Item</th>
+        <th>Details</th>
+        <th>Qty</th>
+        <th>Price</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td><strong>{{ item.type }}</strong></td>
+        <td>{{ item.name }}</td>
+        <td><small>{{ item.details }}</small></td>
+        <td>{{ item.quantity }}</td>
+        <td>${{ "%.2f"|format(item.total_price) }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
-    {% block nav %}
-    {% endblock %}
-
+<h3>Grand Total: ${{ "%.2f"|format(grand_total) }}</h3>
 {% endblock %}
