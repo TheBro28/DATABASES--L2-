@@ -4,6 +4,95 @@
 <div class="detail-page-wrapper">
     <h2 class="menu-title">Build Your Own Sandwich</h2>
     <hr class="title-divider">
-    <p>Sandwich builder coming soon.</p>
+
+    <div class="builder-card">
+        <!-- Fields are read by JS via FormData -->
+        <form id="builder-form" action="{{ url_for('update_custom_sandwich') }}">
+
+            <!-- Bread choice as a dropdown - description/price shown below once one is picked -->
+            <div class="builder-section">
+                <h3>Bread</h3>
+                <select id="bread-select" name="bread" class="builder-select" onchange="handleBuilderChange('bread')" required>
+                    <option value="" disabled {% if not selected_bread %}selected{% endif %}>--Select Bread--</option>
+                    {% for bread in breads %}
+                    <option value="{{ bread[0] }}" {% if selected_bread == bread[0] %}selected{% endif %}>{{ bread[1] }} (${{ "%.2f"|format(bread[3]) }})</option>
+                    {% endfor %}
+                </select>
+
+                <div class="builder-description-container">
+                    {% for bread in breads %}
+                    <div id="bread-desc-{{ bread[0] }}" class="bread-description-block description-block {% if selected_bread == bread[0] %}active-description{% endif %}">
+                        <p class="builder-option-description">{{ bread[2] }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Cheese choice as a dropdown - description/price shown below once one is picked -->
+            <div class="builder-section">
+                <h3>Cheese</h3>
+                <select id="cheese-select" name="cheese" class="builder-select" onchange="handleBuilderChange('cheese')" required>
+                    <option value="" disabled {% if not selected_cheese %}selected{% endif %}>--Select Cheese--</option>
+                    {% for cheese in cheeses %}
+                    <option value="{{ cheese[0] }}" {% if selected_cheese == cheese[0] %}selected{% endif %}>{{ cheese[1] }} (${{ "%.2f"|format(cheese[3]) }})</option>
+                    {% endfor %}
+                </select>
+
+                <div class="builder-description-container">
+                    {% for cheese in cheeses %}
+                    <div id="cheese-desc-{{ cheese[0] }}" class="cheese-description-block description-block {% if selected_cheese == cheese[0] %}active-description{% endif %}">
+                        <p class="builder-option-description">{{ cheese[2] }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Sauce choices, multiple allowed -->
+            <div class="builder-section">
+                <h3>Sauces</h3>
+                <div class="builder-options">
+                    {% for sauce in sauces %}
+                    <label class="builder-option">
+                        <input type="checkbox" name="sauces" value="{{ sauce[0] }}" {% if sauce[0] in selected_sauces %}checked{% endif %} onchange="handleBuilderChange('sauce')">
+                        {{ sauce[1] }} (${{ "%.2f"|format(sauce[2]) }})
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Topping choices, multiple allowed -->
+            <div class="builder-section">
+                <h3>Toppings</h3>
+                <div class="builder-options">
+                    {% for topping in toppings %}
+                    <label class="builder-option">
+                        <input type="checkbox" name="toppings" value="{{ topping[0] }}" {% if topping[0] in selected_toppings %}checked{% endif %} onchange="handleBuilderChange('topping')">
+                        {{ topping[1] }} (${{ "%.2f"|format(topping[2]) }})
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Running total, updated live as the user selection changes -->
+            <div class="builder-total">
+                Total: $<span id="builder-total-value">{{ "%.2f"|format(total_price) }}</span>
+            </div>
+
+        </form>
+
+        <!-- Placeholder for the "Add to Cart" button -->
+        <button type="button" id="add-to-cart-btn" class="builder-add-to-cart-btn" disabled>Add to Cart</button>
+
+        <!-- Clears the in-progress sandwich build from the session -->
+        <form action="{{ url_for('cancel_custom_sandwich') }}" method="POST">
+            <button type="submit" class="builder-cancel-btn">Start Over</button>
+        </form>
+    </div>
 </div>
+
+<!-- Bread/cheese/sauce/topping prices as JSON - read by script.js -->
+<script type="application/json" id="bread-prices-data">{{ bread_prices | tojson }}</script>
+<script type="application/json" id="cheese-prices-data">{{ cheese_prices | tojson }}</script>
+<script type="application/json" id="sauce-prices-data">{{ sauce_prices | tojson }}</script>
+<script type="application/json" id="topping-prices-data">{{ topping_prices | tojson }}</script>
 {% endblock %}

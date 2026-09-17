@@ -154,10 +154,99 @@ def menu():
         custom_starting_price=custom_starting_price
     )
 
+# --- CUSTOM SANDWICH BUILDER --- #
+
+# Works out the running total for whatever is currently stored in the session
+def calculate_custom_sandwich_price(selection):
+    total = 0.0
+
+    # Adds the price of the chosen bread, if one has been picked yet
+    if selection.get('bread'):
+        bread_row = query_db("SELECT price FROM BREAD WHERE ID = ?", (selection['bread'],), one=True)
+        if bread_row:
+            total += bread_row[0]
+
+    # Adds the price of the chosen cheese, if one has been picked yet
+    if selection.get('cheese'):
+        cheese_row = query_db("SELECT price FROM CHEESE WHERE ID = ?", (selection['cheese'],), one=True)
+        if cheese_row:
+            total += cheese_row[0]
+
+    # Adds the price of every chosen sauce
+    for sauce_id in selection.get('sauces', []):
+        sauce_row = query_db("SELECT price FROM SAUCE WHERE ID = ?", (sauce_id,), one=True)
+        if sauce_row:
+            total += sauce_row[0]
+
+    # Adds the price of every chosen topping
+    for topping_id in selection.get('toppings', []):
+        topping_row = query_db("SELECT price FROM TOPPINGS WHERE ID = ?", (topping_id,), one=True)
+        if topping_row:
+            total += topping_row[0]
+
+    return total
+
 # Custom sandwich builder page
 @app.route('/custom-sandwich')
 def custom_sandwich():
-    return render_template("custom_sandwich.html")
+    # Pulls every available bread and cheese, including their descriptions, to fill the option lists
+    breads = query_db("SELECT ID, name, description, price FROM BREAD")
+    cheeses = query_db("SELECT ID, name, description, price FROM CHEESE")
+    # Selects sauces and toppings name and price
+    sauces = query_db("SELECT ID, name, price FROM SAUCE")
+    toppings = query_db("SELECT ID, name, price FROM TOPPINGS")
+
+    # ID-to-price lookup dictionaries for price calculator in script.js
+    bread_prices = {row[0]: row[3] for row in breads}
+    cheese_prices = {row[0]: row[3] for row in cheeses}
+    sauce_prices = {row[0]: row[2] for row in sauces}
+    topping_prices = {row[0]: row[2] for row in toppings}
+
+    # Reads back whatever the customer has picked so far this session - never touches the database
+    selection = session.get('custom_sandwich', {'bread': None, 'cheese': None, 'sauces': [], 'toppings': []})
+    total_price = calculate_custom_sandwich_price(selection)
+
+    return render_template(
+        "custom_sandwich.html",
+        breads=breads,
+        cheeses=cheeses,
+        sauces=sauces,
+        toppings=toppings,
+        bread_prices=bread_prices,
+        cheese_prices=cheese_prices,
+        sauce_prices=sauce_prices,
+        topping_prices=topping_prices,
+        selected_bread=selection.get('bread'),
+        selected_cheese=selection.get('cheese'),
+        selected_sauces=selection.get('sauces', []),
+        selected_toppings=selection.get('toppings', []),
+        total_price=total_price
+    )
+
+# Saves the customer's current choices into the session
+@app.post('/custom-sandwich/update')
+def update_custom_sandwich():
+    bread_id = request.form.get('bread', type=int)
+    cheese_id = request.form.get('cheese', type=int)
+    sauce_ids = request.form.getlist('sauces', type=int)
+    topping_ids = request.form.getlist('toppings', type=int)
+
+    # Overwrites the in-progress build in the session (Doesn't touch the database at all until the customer finalises the order)
+    session['custom_sandwich'] = {
+        'bread': bread_id,
+        'cheese': cheese_id,
+        'sauces': sauce_ids,
+        'toppings': topping_ids
+    }
+
+    # Called silently in the background every time a choice changes, so no page reload is needed
+    return {'status': 'saved'}
+
+# Wipes the in-progress sandwich out of the session, discarding it completely
+@app.post('/custom-sandwich/cancel')
+def cancel_custom_sandwich():
+    session.pop('custom_sandwich', None)
+    return redirect(url_for('menu'))
 
 # --- DATABASE LOGIN HANDLING  --- #
 
@@ -274,6 +363,11 @@ def account_details():
 def logout():
     session.pop('user', None)
     return redirect('/')
+
+# Error handling for 404 page not found
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
 
 # Starts up the website server
 if __name__ == "__main__":

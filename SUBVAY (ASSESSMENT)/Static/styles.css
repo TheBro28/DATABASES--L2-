@@ -227,8 +227,150 @@ p a:hover {
     opacity: 0.8;
 }
 
+/* Sized down to match the visual weight of the real sandwich photos */
 .custom-sandwich-icon {
     font-size: 80px;
     color: #7494ec;
     margin-bottom: 15px;
+}
+
+/* --- CUSTOM SANDWICH BUILDER --- */
+
+/* Dark card to match high fidelity model */
+.builder-card {
+    background: #262626;
+    color: #f5f5f5;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    margin-top: 20px;
+}
+
+/* Thin separation line between each field group */
+.builder-section {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #444;
+}
+
+.builder-section:last-of-type {
+    border-bottom: none;
+}
+
+.builder-section h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ff4d4d;
+    text-decoration: underline;
+    margin-bottom: 12px;
+}
+
+/* Dropdown styling for the bread/cheese */
+.builder-select {
+    width: 100%;
+    padding: 10px;
+    background: #333;
+    color: #f5f5f5;
+    border: 1px solid #555;
+    border-radius: 6px;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+/* Only the description matching the currently selected dropdown value is shown */
+.description-block {
+    display: none;
+}
+
+.description-block.active-description {
+    display: block;
+}
+
+/* Preserves the paragraph breaks already in the bread/cheese description text */
+.builder-option-description {
+    font-size: 13px;
+    color: #b3b3b3;
+    white-space: pre-line;
+    margin-top: 4px;
+}
+
+
+.builder-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.builder-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #333;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #f5f5f5;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.builder-option:hover {
+    border-color: #7494ec;
+}
+
+/* Highlights the whole box blue once its checkbox is ticked */
+.builder-option:has(input:checked) {
+    background: #7494ec;
+    border-color: #7494ec;
+}
+
+.builder-option input {
+    width: auto;
+    margin-bottom: 0;
+}
+
+.builder-total {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffc107;
+    text-align: center;
+    margin: 25px 0;
+}
+
+.builder-card button {
+    border-radius: 30px;
+}
+
+.builder-cancel-btn {
+    background: #dc3545;
+}
+
+.builder-cancel-btn:hover {
+    background: #b02a37;
+}
+
+/* "Add to Cart" placeholder button - disabled until a bread and cheese are both chosen */
+.builder-add-to-cart-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+    background: #28a745;
+    cursor: pointer;
+    transition: 0.5s;
+    margin-bottom: 10px;
+}
+
+.builder-add-to-cart-btn:hover:not(:disabled) {
+    background: #21883a;
+}
+
+.builder-add-to-cart-btn:disabled {
+    background: #555;
+    color: #999;
+    cursor: not-allowed;
 }
