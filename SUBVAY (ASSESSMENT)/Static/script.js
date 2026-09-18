@@ -72,12 +72,12 @@ function updateBuilderTotal() {
     document.getElementById('add-to-cart-btn').disabled = !(breadId && cheeseId);
 }
 
-// Saves the current selection into the session in the background, without reloading the page
+// Saves the current selection into the session background workspace slot
 function syncBuilderSelection() {
     const form = document.getElementById('builder-form');
     if (!form) return;
 
-    fetch(form.action, {
+    fetch('/custom-sandwich/save-progress', {
         method: 'POST',
         body: new FormData(form)
     }).catch(() => {

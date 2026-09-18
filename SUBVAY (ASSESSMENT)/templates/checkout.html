@@ -1,8 +1,39 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<h2>Checkout</h2>
 
-    {% block nav %}
-    {% endblock %}
+<div class="checkout-container">
+    {% if items %}
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Details</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td><strong>{{ item.name }}</strong></td>
+                    <td><small>{{ item.type }}</small></td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ "%.2f"|format(item.price) }}</td>
+                    <td>${{ "%.2f"|format(item.subtotal) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
+        <div class="total-box">
+            <h3>Grand Total: ${{ "%.2f"|format(grand_total) }}</h3>
+            <a href="/checkout/thanks" class="btn checkout-btn">Purchase</a>
+        </div>
+    {% else %}
+        <p>Your session cart is empty! <a href="/menu">Go back to the menu</a> to add sandwiches.</p>
+    {% endif %}
+</div>
 {% endblock %}
