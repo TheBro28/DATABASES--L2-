@@ -6,7 +6,7 @@ import sqlite3, hashlib
 DATABASE = 'subvay.db'
 
 # Create and set up the website application
-app = Flask(__name__)
+app = Flask(__name__, static_folder='Static')
 # security password that protects users logins from hackers
 app.secret_key = '4a9f83b21cde567890abcdef1234567890abcdef12345678' 
 
