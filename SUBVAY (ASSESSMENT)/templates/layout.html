@@ -50,6 +50,20 @@
 </nav>
 {% endblock %}
 
+<!-- Feedback messages -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-messages-container">
+      {% for message in messages %}
+        <div class="flash-message alert-success">
+          <span class="message-text">{{ message }}</span>
+          <button class="close-flash-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
 <!-- content placeholder -->
 {% block content %}
 {% endblock %}

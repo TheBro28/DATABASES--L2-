@@ -374,3 +374,59 @@ p a:hover {
     color: #999;
     cursor: not-allowed;
 }
+
+/* --- FEEDBACK ALERTS --- */
+
+/* Container positioned at the top center of the screen */
+.flash-messages-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+}
+
+/* The actual alert box */
+.flash-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 15px 20px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+    animation: slideDown 0.3s ease-out;
+}
+
+/* Close button on the right side */
+.close-flash-btn {
+    background: none;
+    border: none;
+    color: #155724;
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0 0 10px;
+}
+
+.close-flash-btn:hover {
+    color: #000;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
