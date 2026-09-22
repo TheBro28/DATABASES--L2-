@@ -556,6 +556,16 @@ def delete_custom_item(index):
             
     return redirect(url_for('checkout'))
 
+# --- THANK YOU PAGE --- #
+
+# Send the user to thanks.html after they click the purchase button on the checkout page.
+@app.route('/checkout/thanks')
+def purchase_thanks():
+    # Deletes items from session in cart
+    session.pop('premade_cart', None)
+    session.pop('custom_cart', None)
+    
+    return render_template("thanks.html")
 
 # Starts up the website server
 if __name__ == "__main__":
