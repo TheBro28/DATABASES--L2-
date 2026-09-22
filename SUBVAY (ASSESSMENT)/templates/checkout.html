@@ -13,6 +13,7 @@
                     <th>Qty</th>
                     <th>Price</th>
                     <th>Total</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,9 +21,36 @@
                 <tr>
                     <td><strong>{{ item.name }}</strong></td>
                     <td><small>{{ item.type }}</small></td>
-                    <td>{{ item.quantity }}</td>
+                    <td>
+                        {% if item.is_premade %}
+                        <form action="/cart/update-quantity/{{ item.id }}" method="POST" style="display:inline;">
+                            <select name="quantity" onchange="this.form.submit()" class="checkout-qty-dropdown">
+                                {% for q in range(0, 11) %}
+                                <option value="{{ q }}" {% if item.quantity == q %}selected{% endif %}>{{ q }}{% if q == 0 %} (Remove){% endif %}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                        {% else %}
+                        <form action="/cart/update-custom-quantity/{{ item.cart_index }}" method="POST" style="display:inline;">
+                            <select name="quantity" onchange="this.form.submit()" class="checkout-qty-dropdown">
+                                {% for q in range(0, 11) %}
+                                <option value="{{ q }}" {% if item.quantity == q %}selected{% endif %}>{{ q }}{% if q == 0 %} (Remove){% endif %}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                        {% endif %}
+                    </td>
+
                     <td>${{ "%.2f"|format(item.price) }}</td>
                     <td>${{ "%.2f"|format(item.subtotal) }}</td>
+                    <td>
+
+                        {% if item.type == 'Pre-made Sub' %}
+                            <a href="/cart/delete-premade/{{ item.id }}" class="delete-link" style="color: #d9534f; text-decoration: none;">❌ Delete</a>
+                        {% else %}
+                            <a href="/cart/delete-custom/{{ item.cart_index }}" class="delete-link" style="color: #d9534f; text-decoration: none;">❌ Delete</a>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

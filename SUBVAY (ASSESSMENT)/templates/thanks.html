@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    {% block nav %}
+    {% endblock %}
+
+    <div class="thanks-container">
+        <h2>Thank You for Your Purchase!</h2>
+        <h4>Order confirmed! Your meal is being processed for pickup at [Location Name/Address]. Please have your order number ready when you arrive.</h4>
+        <p>We appreciate your business and hope to see you again soon!<br>
+                     Thanks again from The Subvay Team</p>
+        <a href="/menu" class="btn back-to-menu-btn">Back to Menu</a>
+    </div>
+
+{% endblock %}

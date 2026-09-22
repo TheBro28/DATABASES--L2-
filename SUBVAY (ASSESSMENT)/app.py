@@ -293,21 +293,36 @@ def add_custom_to_session():
     if 'custom_cart' not in session:
         session['custom_cart'] = []
 
-    new_custom_sub = {
+    new_sub_blueprint = {
         'bread': bread_id,
         'cheese': cheese_id,
-        'sauces': sauce_ids,
-        'toppings': topping_ids
+        'sauces': sorted(sauce_ids),
+        'toppings': sorted(topping_ids)
     }
 
     cart = session['custom_cart']
-    cart.append(new_custom_sub)
-    session['custom_cart'] = cart
+    
+    # Check if custom sandwich already exists in the cart
+    match_found = False
+    for item in cart:
+        # Compare to see if it matches the new sandwich (ignoring quantity)
+        item_blueprint = {k: item[k] for k in item if k != 'quantity'}
+        if item_blueprint == new_sub_blueprint:
+            item['quantity'] = item.get('quantity', 1) + 1
+            match_found = True
+            break
 
+    if not match_found:
+        # Add new custom sandwich to the cart with a quantity of 1
+        new_sub_blueprint['quantity'] = 1
+        cart.append(new_sub_blueprint)
+
+    session['custom_cart'] = cart
     session.pop('custom_sandwich', None)
 
     flash("Your custom sandwich has been added to the cart!")
     return redirect(url_for('menu'))
+
 
 # --- CHECKOUT PAGE --- #
 
@@ -324,8 +339,10 @@ def checkout():
             subtotal = price * quantity
             grand_total += subtotal
             checkout_items.append({
+                'id': item_id_str,
                 'name': name,
                 'type': 'Pre-made Sub',
+                'is_premade': True,
                 'quantity': quantity,
                 'price': price,
                 'subtotal': subtotal
@@ -333,26 +350,30 @@ def checkout():
 
     custom_cart = session.get('custom_cart', [])
     for index, custom in enumerate(custom_cart):
-        custom_price = calculate_custom_sandwich_price(custom)
-        grand_total += custom_price
+        single_unit_price = calculate_custom_sandwich_price(custom)
+        qty = custom.get('quantity', 1)
         
-        bread_name = query_db("SELECT name FROM BREAD WHERE ID = ?", (custom['bread'],), one=True)
-        cheese_name = query_db("SELECT name FROM CHEESE WHERE ID = ?", (custom['cheese'],), one=True)
+        subtotal = single_unit_price * qty
+        grand_total += subtotal
         
-        b_name = bread_name[0] if bread_name else "Unknown Bread"
-        c_name = cheese_name[0] if cheese_name else "Unknown Cheese"
+        bread_row = query_db("SELECT name FROM BREAD WHERE ID = ?", (custom['bread'],), one=True)
+        cheese_row = query_db("SELECT name FROM CHEESE WHERE ID = ?", (custom['cheese'],), one=True)
+        
+        b_name = bread_row if bread_row else "Unknown Bread"
+        c_name = cheese_row if cheese_row else "Unknown Cheese"
         description = f"Bread: {b_name}, Cheese: {c_name}"
         
         checkout_items.append({
+            'cart_index': int(index),
             'name': f'Custom Sub #{index + 1}',
             'type': description,
-            'quantity': 1,
-            'price': custom_price,
-            'subtotal': custom_price
+            'is_premade': False,
+            'quantity': qty,
+            'price': single_unit_price,
+            'subtotal': subtotal
         })
 
     return render_template("checkout.html", items=checkout_items, grand_total=grand_total)
-
 
 # --- DATABASE LOGIN HANDLING  --- #
 
@@ -474,6 +495,67 @@ def logout():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
+
+# --- CHECKOUT ROUTES --- #
+
+# Updates the number of pre-made subs in the cart or deletes them if set to 0
+@app.post('/cart/update-quantity/<string:item_id>')
+def update_cart_quantity(item_id):
+    # Reads the number chosen in dropdown
+    quantity = request.form.get('quantity', type=int)
+    
+    if 'premade_cart' in session:
+        cart = session['premade_cart']
+        # If the quantity is 1 or more, update the cart, otherwise remove the item
+        if quantity and quantity > 0:
+            cart[item_id] = quantity
+        else:
+            cart.pop(item_id, None)
+        session['premade_cart'] = cart
+        
+    return redirect(url_for('checkout'))
+
+@app.post('/cart/update-custom-quantity/<int:index>')
+def update_custom_quantity(index):
+    quantity = request.form.get('quantity', type=int)
+    
+    if 'custom_cart' in session:
+        cart = session['custom_cart']
+        if 0 <= index < len(cart):
+            if quantity and quantity > 0:
+                cart[index]['quantity'] = quantity
+            else:
+                cart.pop(index)
+            session['custom_cart'] = cart
+            
+    return redirect(url_for('checkout'))
+
+# Deletes a pre-made sandwich from the cart
+@app.route('/cart/delete-premade/<string:item_id>')
+def delete_premade_item(item_id):
+    if 'premade_cart' in session:
+        cart = session['premade_cart']
+        cart.pop(item_id, None)
+        session['premade_cart'] = cart
+        flash("Pre-made sub removed.")
+        
+    return redirect(url_for('checkout'))
+
+
+# Deletes a custom sandwich from the cart
+@app.route('/cart/delete-custom/<int:index>')
+def delete_custom_item(index):
+    if 'custom_cart' in session:
+        cart = session['custom_cart']
+        # Prevents python from crashing if the index is out of range
+        idx = int(index)
+        if 0 <= idx < len(cart):
+            cart.pop(idx)
+            session['custom_cart'] = cart
+            flash("Custom sub removed.")
+            
+    return redirect(url_for('checkout'))
+
 
 # Starts up the website server
 if __name__ == "__main__":
