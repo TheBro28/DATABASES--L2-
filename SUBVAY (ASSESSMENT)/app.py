@@ -556,17 +556,52 @@ def delete_custom_item(index):
             
     return redirect(url_for('checkout'))
 
-# --- THANK YOU PAGE --- #
 
-# Send the user to thanks.html after they click the purchase button on the checkout page.
+    # NOT COMPLETED TO BE CONTINUED
+
+# --- THANK YOU, ORDER COMPLETION, & DATABASE COMMIT --- #
+"""
 @app.route('/checkout/thanks')
 def purchase_thanks():
-    # Deletes items from session in cart
-    session.pop('premade_cart', None)
-    session.pop('custom_cart', None)
-    
-    return render_template("thanks.html")
+    # Make sure the user is logged in before processing the order
+    email = session.get('user')
+    if not email:
+        flash("You must be logged in to complete a purchase!")
+        return redirect(url_for('signin'))
 
+    premade_cart = session.get('premade_cart', {})
+    custom_cart = session.get('custom_cart', [])
+
+    # Make sure the cart isn't empty 
+    if not premade_cart and not custom_cart:
+        flash("Your cart is empty.")
+        return redirect(url_for('menu'))
+
+    db = get_db()
+
+    try:
+        # Look up customer ID based on the logged-in email
+        customer_row = query_db("SELECT ID FROM CUSTOMER WHERE email = ?", (email,), one=True)
+        if not customer_row:
+            flash("User account not found.")
+            return redirect(url_for('signin'))
+        customer_id = customer_row[0]
+
+        # Calculate the grand total for the order
+        grand_total = 0.0
+        
+        for item_id_str, quantity in premade_cart.items():
+            price_row = query_db("SELECT price FROM PRE_SANDWICH WHERE ID = ?", (int(item_id_str),), one=True)
+            if price_row:
+                grand_total += price_row[0] * quantity
+
+        for custom in custom_cart:
+            single_unit_price = calculate_custom_sandwich_price(custom)
+            qty = custom.get('quantity', 1)
+            grand_total += single_unit_price * qty
+
+    return render_template("thanks.html")
+"""
 # Starts up the website server
 if __name__ == "__main__":
     migrate_passwords()
