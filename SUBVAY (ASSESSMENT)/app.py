@@ -541,7 +541,6 @@ def delete_premade_item(item_id):
         
     return redirect(url_for('checkout'))
 
-
 # Deletes a custom sandwich from the cart
 @app.route('/cart/delete-custom/<int:index>')
 def delete_custom_item(index):
@@ -556,11 +555,10 @@ def delete_custom_item(index):
             
     return redirect(url_for('checkout'))
 
-
     # NOT COMPLETED TO BE CONTINUED
 
 # --- THANK YOU, ORDER COMPLETION, & DATABASE COMMIT --- #
-"""
+
 @app.route('/checkout/thanks')
 def purchase_thanks():
     # Make sure the user is logged in before processing the order
@@ -572,13 +570,13 @@ def purchase_thanks():
     premade_cart = session.get('premade_cart', {})
     custom_cart = session.get('custom_cart', [])
 
-    # Make sure the cart isn't empty 
+    # Make sure the cart isn't empty
     if not premade_cart and not custom_cart:
         flash("Your cart is empty.")
         return redirect(url_for('menu'))
 
     db = get_db()
-
+   
     try:
         # Look up customer ID based on the logged-in email
         customer_row = query_db("SELECT ID FROM CUSTOMER WHERE email = ?", (email,), one=True)
@@ -589,7 +587,7 @@ def purchase_thanks():
 
         # Calculate the grand total for the order
         grand_total = 0.0
-        
+       
         for item_id_str, quantity in premade_cart.items():
             price_row = query_db("SELECT price FROM PRE_SANDWICH WHERE ID = ?", (int(item_id_str),), one=True)
             if price_row:
@@ -600,8 +598,79 @@ def purchase_thanks():
             qty = custom.get('quantity', 1)
             grand_total += single_unit_price * qty
 
+        # Insert order information into the ORDERS table and get the new order ID
+        cursor = db.execute(
+            """
+            INSERT INTO ORDERS (customer_ID, order_ts, total_amount)
+            VALUES (?, datetime('now', 'localtime'), ?)
+            """,
+            (customer_id, grand_total)
+        )
+        new_order_id = cursor.lastrowid
+
+        # Insert each pre-made sandwich into the ORDER_ITEMS table
+        for item_id_str, quantity in premade_cart.items():
+            pre_id = int(item_id_str)
+            price_row = query_db("SELECT price FROM PRE_SANDWICH WHERE ID = ?", (pre_id,), one=True)
+            if price_row:
+                actual_price = price_row[0]
+                db.execute(
+                    """
+                    INSERT INTO ORDER_ITEMS (order_ID, pre_sandwich_ID, cus_sandwich_ID, quantity, final_price)
+                    VALUES (?, ?, NULL, ?, ?)
+                    """,
+                    (new_order_id, pre_id, quantity, actual_price * quantity)
+                )
+
+        # Insert each custom sandwich into the ORDER_ITEMS table with its sauces and toppings
+        for custom in custom_cart:
+            qty = custom.get('quantity', 1)
+            single_unit_price = calculate_custom_sandwich_price(custom)
+            total_custom_price = single_unit_price * qty
+           
+            # Insert the custom sandwich into the CUS_SANDWICH table and get its new ID
+            cus_cursor = db.execute(
+                "INSERT INTO CUS_SANDWICH (bread_ID, cheese_ID) VALUES (?, ?)",
+                (custom['bread'], custom['cheese'])
+            )
+            new_custom_sandwich_id = cus_cursor.lastrowid
+           
+            # Insert the selected sauces into the CUS_SANDWICH_SAUCES table
+            for sauce_id in custom.get('sauces', []):
+                db.execute(
+                    "INSERT INTO CUS_SANDWICH_SAUCES (cus_sandwich_ID, sauce_ID) VALUES (?, ?)",
+                    (new_custom_sandwich_id, sauce_id)
+                )
+               
+            # Insert the selected toppings into the CUS_SANDWICH_TOPPINGS table
+            for topping_id in custom.get('toppings', []):
+                db.execute(
+                    "INSERT INTO CUS_SANDWICH_TOPPINGS (cus_sandwich_ID, topping_ID) VALUES (?, ?)",
+                    (new_custom_sandwich_id, topping_id)
+                )
+
+            # Insert the custom sandwich into the ORDER_ITEMS table
+            db.execute(
+                """
+                INSERT INTO ORDER_ITEMS (order_ID, pre_sandwich_ID, cus_sandwich_ID, quantity, final_price)
+                VALUES (?, NULL, ?, ?, ?)
+                """,
+                (new_order_id, new_custom_sandwich_id, qty, total_custom_price)
+            )
+
+        # Commit all changes to the database
+        db.commit()
+
+        # Clear the session carts after a successful order
+        session.pop('premade_cart', None)
+        session.pop('custom_cart', None)
+
+    except sqlite3.Error as e:
+        print(f"Database transaction failure: {e}")
+        return "An internal error occurred saving your transaction.", 500
+
     return render_template("thanks.html")
-"""
+
 # Starts up the website server
 if __name__ == "__main__":
     migrate_passwords()
