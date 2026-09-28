@@ -19,8 +19,9 @@
             <!-- Index 2: Description -->
             <p class="detail-description">{{ sandwich[2] }}</p>
             
-            <!-- Future purchase interactions can map here -->
-            <button class="add-to-cart-btn">Add to cart</button>
+            <!-- Triggers the premade session cart route, passing the sandwich ID directly -->
+            <a href="{{ url_for('add_premade_to_session', item_id=sandwich[0]) }}" class="add-to-cart-btn" style="text-align: center; display: inline-block; text-decoration: none; width: 100%;">Add to cart</a>
+
         </div>
     </div>
 </div>

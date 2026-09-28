@@ -1,12 +1,12 @@
 # Import the tools needed to build the website and handle data
-from flask import Flask, g, render_template, request, redirect, session, url_for
+from flask import Flask, g, render_template, request, redirect, session, url_for, Blueprint, flash
 import sqlite3, hashlib
 
 # Defines the database as a constant
 DATABASE = 'subvay.db'
 
 # Create and set up the website application
-app = Flask(__name__)
+app = Flask(__name__, static_folder='Static')
 # security password that protects users logins from hackers
 app.secret_key = '4a9f83b21cde567890abcdef1234567890abcdef12345678' 
 
@@ -95,11 +95,6 @@ def offers():
 @app.route('/history')
 def history():
     return render_template("history.html")
-
-# Checkout Page
-@app.route('/checkout')
-def checkout():
-    return render_template("checkout.html")
 
 # Sign in / Register Page
 @app.route('/signin')
@@ -239,14 +234,146 @@ def update_custom_sandwich():
         'toppings': topping_ids
     }
 
-    # Called silently in the background every time a choice changes, so no page reload is needed
+    # Used every time a choice is made, no reload is needed
     return {'status': 'saved'}
 
-# Wipes the in-progress sandwich out of the session, discarding it completely
+# Wipes the in-progress sandwich out of the session, discarding it completely and sends the user back to the menu page
 @app.post('/custom-sandwich/cancel')
 def cancel_custom_sandwich():
     session.pop('custom_sandwich', None)
     return redirect(url_for('menu'))
+
+# --- SESSION CART MANAGEMENT --- #
+
+@app.post('/custom-sandwich/save-progress')
+def save_custom_progress():
+    bread_id = request.form.get('bread', type=int)
+    cheese_id = request.form.get('cheese', type=int)
+    sauce_ids = request.form.getlist('sauces', type=int)
+    topping_ids = request.form.getlist('toppings', type=int)
+
+    session['custom_sandwich'] = {
+        'bread': bread_id,
+        'cheese': cheese_id,
+        'sauces': sauce_ids,
+        'toppings': topping_ids
+    }
+    return {'status': 'saved'}
+
+
+@app.route('/add-premade-to-session/<int:item_id>')
+def add_premade_to_session(item_id):
+    if 'premade_cart' not in session:
+        session['premade_cart'] = {}
+        
+    item_id_str = str(item_id)
+    sandwich = query_db("SELECT name FROM PRE_SANDWICH WHERE ID = ?", (item_id,), one=True)
+    if not sandwich:
+        return "Sandwich not found", 404
+        
+    cart = session['premade_cart']
+    cart[item_id_str] = cart.get(item_id_str, 0) + 1
+    session['premade_cart'] = cart
+    
+    flash(f'{sandwich[0]} added to your order!')
+    return redirect(request.referrer or '/menu')
+
+
+@app.post('/add-custom-to-session')
+def add_custom_to_session():
+    bread_id = request.form.get('bread', type=int)
+    cheese_id = request.form.get('cheese', type=int)
+    sauce_ids = request.form.getlist('sauces', type=int)
+    topping_ids = request.form.getlist('toppings', type=int)
+
+    if not bread_id or not cheese_id:
+        flash("Please select both a bread and a cheese first!")
+        return redirect(url_for('custom_sandwich'))
+
+    if 'custom_cart' not in session:
+        session['custom_cart'] = []
+
+    new_sub_blueprint = {
+        'bread': bread_id,
+        'cheese': cheese_id,
+        'sauces': sorted(sauce_ids),
+        'toppings': sorted(topping_ids)
+    }
+
+    cart = session['custom_cart']
+    
+    # Check if custom sandwich already exists in the cart
+    match_found = False
+    for item in cart:
+        # Compare to see if it matches the new sandwich (ignoring quantity)
+        item_blueprint = {k: item[k] for k in item if k != 'quantity'}
+        if item_blueprint == new_sub_blueprint:
+            item['quantity'] = item.get('quantity', 1) + 1
+            match_found = True
+            break
+
+    if not match_found:
+        # Add new custom sandwich to the cart with a quantity of 1
+        new_sub_blueprint['quantity'] = 1
+        cart.append(new_sub_blueprint)
+
+    session['custom_cart'] = cart
+    session.pop('custom_sandwich', None)
+
+    flash("Your custom sandwich has been added to the cart!")
+    return redirect(url_for('menu'))
+
+
+# --- CHECKOUT PAGE --- #
+
+@app.route('/checkout')
+def checkout():
+    checkout_items = []
+    grand_total = 0.0
+
+    premade_cart = session.get('premade_cart', {})
+    for item_id_str, quantity in premade_cart.items():
+        sandwich = query_db("SELECT name, price FROM PRE_SANDWICH WHERE ID = ?", (int(item_id_str),), one=True)
+        if sandwich:
+            name, price = sandwich
+            subtotal = price * quantity
+            grand_total += subtotal
+            checkout_items.append({
+                'id': item_id_str,
+                'name': name,
+                'type': 'Pre-made Sub',
+                'is_premade': True,
+                'quantity': quantity,
+                'price': price,
+                'subtotal': subtotal
+            })
+
+    custom_cart = session.get('custom_cart', [])
+    for index, custom in enumerate(custom_cart):
+        single_unit_price = calculate_custom_sandwich_price(custom)
+        qty = custom.get('quantity', 1)
+        
+        subtotal = single_unit_price * qty
+        grand_total += subtotal
+        
+        bread_row = query_db("SELECT name FROM BREAD WHERE ID = ?", (custom['bread'],), one=True)
+        cheese_row = query_db("SELECT name FROM CHEESE WHERE ID = ?", (custom['cheese'],), one=True)
+        
+        b_name = bread_row if bread_row else "Unknown Bread"
+        c_name = cheese_row if cheese_row else "Unknown Cheese"
+        description = f"Bread: {b_name}, Cheese: {c_name}"
+        
+        checkout_items.append({
+            'cart_index': int(index),
+            'name': f'Custom Sub #{index + 1}',
+            'type': description,
+            'is_premade': False,
+            'quantity': qty,
+            'price': single_unit_price,
+            'subtotal': subtotal
+        })
+
+    return render_template("checkout.html", items=checkout_items, grand_total=grand_total)
 
 # --- DATABASE LOGIN HANDLING  --- #
 
@@ -368,6 +495,181 @@ def logout():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
+
+# --- CHECKOUT ROUTES --- #
+
+# Updates the number of pre-made subs in the cart or deletes them if set to 0
+@app.post('/cart/update-quantity/<string:item_id>')
+def update_cart_quantity(item_id):
+    # Reads the number chosen in dropdown
+    quantity = request.form.get('quantity', type=int)
+    
+    if 'premade_cart' in session:
+        cart = session['premade_cart']
+        # If the quantity is 1 or more, update the cart, otherwise remove the item
+        if quantity and quantity > 0:
+            cart[item_id] = quantity
+        else:
+            cart.pop(item_id, None)
+        session['premade_cart'] = cart
+        
+    return redirect(url_for('checkout'))
+
+@app.post('/cart/update-custom-quantity/<int:index>')
+def update_custom_quantity(index):
+    quantity = request.form.get('quantity', type=int)
+    
+    if 'custom_cart' in session:
+        cart = session['custom_cart']
+        if 0 <= index < len(cart):
+            if quantity and quantity > 0:
+                cart[index]['quantity'] = quantity
+            else:
+                cart.pop(index)
+            session['custom_cart'] = cart
+            
+    return redirect(url_for('checkout'))
+
+# Deletes a pre-made sandwich from the cart
+@app.route('/cart/delete-premade/<string:item_id>')
+def delete_premade_item(item_id):
+    if 'premade_cart' in session:
+        cart = session['premade_cart']
+        cart.pop(item_id, None)
+        session['premade_cart'] = cart
+        flash("Pre-made sub removed.")
+        
+    return redirect(url_for('checkout'))
+
+# Deletes a custom sandwich from the cart
+@app.route('/cart/delete-custom/<int:index>')
+def delete_custom_item(index):
+    if 'custom_cart' in session:
+        cart = session['custom_cart']
+        # Prevents python from crashing if the index is out of range
+        idx = int(index)
+        if 0 <= idx < len(cart):
+            cart.pop(idx)
+            session['custom_cart'] = cart
+            flash("Custom sub removed.")
+            
+    return redirect(url_for('checkout'))
+
+    # NOT COMPLETED TO BE CONTINUED
+
+# --- THANK YOU, ORDER COMPLETION, & DATABASE COMMIT --- #
+
+@app.route('/checkout/thanks')
+def purchase_thanks():
+    # Make sure the user is logged in before processing the order
+    email = session.get('user')
+    if not email:
+        flash("You must be logged in to complete a purchase!")
+        return redirect(url_for('signin'))
+
+    premade_cart = session.get('premade_cart', {})
+    custom_cart = session.get('custom_cart', [])
+
+    # Make sure the cart isn't empty
+    if not premade_cart and not custom_cart:
+        flash("Your cart is empty.")
+        return redirect(url_for('menu'))
+
+    db = get_db()
+   
+    try:
+        # Look up customer ID based on the logged-in email
+        customer_row = query_db("SELECT ID FROM CUSTOMER WHERE email = ?", (email,), one=True)
+        if not customer_row:
+            flash("User account not found.")
+            return redirect(url_for('signin'))
+        customer_id = customer_row[0]
+
+        # Calculate the grand total for the order
+        grand_total = 0.0
+       
+        for item_id_str, quantity in premade_cart.items():
+            price_row = query_db("SELECT price FROM PRE_SANDWICH WHERE ID = ?", (int(item_id_str),), one=True)
+            if price_row:
+                grand_total += price_row[0] * quantity
+
+        for custom in custom_cart:
+            single_unit_price = calculate_custom_sandwich_price(custom)
+            qty = custom.get('quantity', 1)
+            grand_total += single_unit_price * qty
+
+        # Insert order information into the ORDERS table and get the new order ID
+        cursor = db.execute(
+            """
+            INSERT INTO ORDERS (customer_ID, order_ts, total_amount)
+            VALUES (?, datetime('now', 'localtime'), ?)
+            """,
+            (customer_id, grand_total)
+        )
+        new_order_id = cursor.lastrowid
+
+        # Insert each pre-made sandwich into the ORDER_ITEMS table
+        for item_id_str, quantity in premade_cart.items():
+            pre_id = int(item_id_str)
+            price_row = query_db("SELECT price FROM PRE_SANDWICH WHERE ID = ?", (pre_id,), one=True)
+            if price_row:
+                actual_price = price_row[0]
+                db.execute(
+                    """
+                    INSERT INTO ORDER_ITEMS (order_ID, pre_sandwich_ID, cus_sandwich_ID, quantity, final_price)
+                    VALUES (?, ?, NULL, ?, ?)
+                    """,
+                    (new_order_id, pre_id, quantity, actual_price * quantity)
+                )
+
+        # Insert each custom sandwich into the ORDER_ITEMS table with its sauces and toppings
+        for custom in custom_cart:
+            qty = custom.get('quantity', 1)
+            single_unit_price = calculate_custom_sandwich_price(custom)
+            total_custom_price = single_unit_price * qty
+           
+            # Insert the custom sandwich into the CUS_SANDWICH table and get its new ID
+            cus_cursor = db.execute(
+                "INSERT INTO CUS_SANDWICH (bread_ID, cheese_ID) VALUES (?, ?)",
+                (custom['bread'], custom['cheese'])
+            )
+            new_custom_sandwich_id = cus_cursor.lastrowid
+           
+            # Insert the selected sauces into the CUS_SANDWICH_SAUCES table
+            for sauce_id in custom.get('sauces', []):
+                db.execute(
+                    "INSERT INTO CUS_SANDWICH_SAUCES (cus_sandwich_ID, sauce_ID) VALUES (?, ?)",
+                    (new_custom_sandwich_id, sauce_id)
+                )
+               
+            # Insert the selected toppings into the CUS_SANDWICH_TOPPINGS table
+            for topping_id in custom.get('toppings', []):
+                db.execute(
+                    "INSERT INTO CUS_SANDWICH_TOPPINGS (cus_sandwich_ID, topping_ID) VALUES (?, ?)",
+                    (new_custom_sandwich_id, topping_id)
+                )
+
+            # Insert the custom sandwich into the ORDER_ITEMS table
+            db.execute(
+                """
+                INSERT INTO ORDER_ITEMS (order_ID, pre_sandwich_ID, cus_sandwich_ID, quantity, final_price)
+                VALUES (?, NULL, ?, ?, ?)
+                """,
+                (new_order_id, new_custom_sandwich_id, qty, total_custom_price)
+            )
+
+        # Commit all changes to the database
+        db.commit()
+
+        # Clear the session carts after a successful order
+        session.pop('premade_cart', None)
+        session.pop('custom_cart', None)
+
+    except sqlite3.Error as e:
+        print(f"Database transaction failure: {e}")
+        return "An internal error occurred saving your transaction.", 500
+
+    return render_template("thanks.html")
 
 # Starts up the website server
 if __name__ == "__main__":

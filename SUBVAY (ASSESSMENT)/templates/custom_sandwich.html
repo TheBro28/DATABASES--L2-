@@ -6,8 +6,8 @@
     <hr class="title-divider">
 
     <div class="builder-card">
-        <!-- Fields are read by JS via FormData -->
-        <form id="builder-form" action="{{ url_for('update_custom_sandwich') }}">
+        <!-- FIXED: Form now natively POSTs to add the custom sandwich directly into the session list -->
+        <form id="builder-form" action="{{ url_for('add_custom_to_session') }}" method="POST">
 
             <!-- Bread choice as a dropdown - description/price shown below once one is picked -->
             <div class="builder-section">
@@ -78,10 +78,10 @@
                 Total: $<span id="builder-total-value">{{ "%.2f"|format(total_price) }}</span>
             </div>
 
-        </form>
+            <!-- Adds item to cart -->
+            <button type="submit" id="add-to-cart-btn" class="builder-add-to-cart-btn" disabled>Add to Cart</button>
 
-        <!-- Placeholder for the "Add to Cart" button -->
-        <button type="button" id="add-to-cart-btn" class="builder-add-to-cart-btn" disabled>Add to Cart</button>
+        </form>
 
         <!-- Clears the in-progress sandwich build from the session -->
         <form action="{{ url_for('cancel_custom_sandwich') }}" method="POST">
