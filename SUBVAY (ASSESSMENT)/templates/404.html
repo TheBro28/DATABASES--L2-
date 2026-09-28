@@ -1,5 +1,21 @@
 {% extends "layout.html" %}
 
+{% block title %} Page Not Found {% endblock %}
+
 {% block content %}
-<h1>404 Page not found</h1>
+<div class="login-page-wrapper error-page-wrapper">
+    <div class="container">
+        <div class="form-box active error-card">
+            <h2 class="error-title">Page Not Found</h2>
+            
+            <p class="error-text">
+                The page or web address you are looking for could not be found. This might be because the URL was mistyped, the link is broken, or the page has been moved to a new location.
+            </p>
+            
+            <a href="{{ url_for('home') }}" class="error-btn-link">
+                <button type="button" class="error-home-btn">Return To Home</button>
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}
