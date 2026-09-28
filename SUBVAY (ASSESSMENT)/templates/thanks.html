@@ -1,12 +1,24 @@
+<!-- Uses the shared layout (navigation bar, styles) so the page matches the rest of the site -->
 {% extends "layout.html" %}
 
+<!-- Fills the main content area of the layout with the order confirmation -->
 {% block content %}
+    <!-- Dark card that holds the whole confirmation message -->
     <div class="thanks-container">
-        <h2>Thank You for Your Purchase!</h2>
-        <h4>Order confirmed! Your meal is being processed for pickup at [Location Name/Address]. Please have your order number ready when you arrive.</h4>
-        <p>We appreciate your business and hope to see you again soon!<br>
-                     Thanks again from The Subvay Team</p>
-        <a href="/menu" class="btn back-to-menu-btn">Back to Menu</a>
+        <!-- Green tick inside a circle -->
+        <svg class="thanks-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#00b83f" stroke-width="8"/>
+            <path d="M28 52 L44 68 L73 36" fill="none" stroke="#00b83f" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+
+        <!-- Main thank you heading -->
+        <h2>Thank you for your purchase!</h2>
+
+        <!-- Pickup message with store name -->
+        <p class="thanks-message">Order confirmed! Your meal is being processed for pickup at {{ store_name }}. Please have your order number ready when you arrive.</p>
+
+        <!-- Closing thank you message -->
+        <p class="thanks-small">We appreciate your business and hope to see you again soon!<br>Thanks again from The Subvay Team</p>
     </div>
 
 {% endblock %}

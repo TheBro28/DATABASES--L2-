@@ -435,3 +435,49 @@ p a:hover {
         opacity: 1;
     }
 }
+
+/* --- THANK YOU PAGE --- */
+
+/* Card container for the thank you message */
+.thanks-container {
+    width: 90%;
+    max-width: 660px;
+    margin: 70px auto;
+    padding: 50px 40px 52px;
+    background: #333;
+    color: #fff;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* Green tick inside a circle */
+.thanks-icon {
+    width: 86px;
+    height: 86px;
+    display: block;
+    margin: 0 auto 20px auto;
+}
+
+/* Main heading */
+.thanks-container h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* Pickup message */
+.thanks-message {
+    max-width: 560px;
+    margin: 0 auto 26px auto;
+    font-size: 17px;
+    line-height: 1.2;
+    color: #eee;
+}
+
+/* Smaller closing message */
+.thanks-small {
+    font-size: 12px;
+    line-height: 1.2;
+    color: #ddd;
+    margin-bottom: 0;
+}

@@ -245,6 +245,7 @@ def cancel_custom_sandwich():
 
 # --- SESSION CART MANAGEMENT --- #
 
+# Auto-saves the in-progress custom sandwich to the session (same as update_custom_sandwich, called periodically)
 @app.post('/custom-sandwich/save-progress')
 def save_custom_progress():
     bread_id = request.form.get('bread', type=int)
@@ -252,6 +253,7 @@ def save_custom_progress():
     sauce_ids = request.form.getlist('sauces', type=int)
     topping_ids = request.form.getlist('toppings', type=int)
 
+    # Overwrites the in-progress build in the session
     session['custom_sandwich'] = {
         'bread': bread_id,
         'cheese': cheese_id,
@@ -261,24 +263,30 @@ def save_custom_progress():
     return {'status': 'saved'}
 
 
+# Adds a pre-made sandwich to the cart, or increases its quantity if it's already there
 @app.route('/add-premade-to-session/<int:item_id>')
 def add_premade_to_session(item_id):
+    # Creates an empty pre-made cart in the session if one doesn't exist yet
     if 'premade_cart' not in session:
         session['premade_cart'] = {}
         
     item_id_str = str(item_id)
+    # Looks up the sandwich's name so it can be confirmed and shown in the flash message
     sandwich = query_db("SELECT name FROM PRE_SANDWICH WHERE ID = ?", (item_id,), one=True)
     if not sandwich:
         return "Sandwich not found", 404
         
+    # Increases the quantity by 1 if it's already in the cart, otherwise adds it with a quantity of 1
     cart = session['premade_cart']
     cart[item_id_str] = cart.get(item_id_str, 0) + 1
     session['premade_cart'] = cart
     
+    # Lets the customer know it was added, then sends them back to whichever page they came from
     flash(f'{sandwich[0]} added to your order!')
     return redirect(request.referrer or '/menu')
 
 
+# Adds the in-progress custom sandwich to the cart, merging it with a matching one if it already exists
 @app.post('/add-custom-to-session')
 def add_custom_to_session():
     bread_id = request.form.get('bread', type=int)
@@ -286,13 +294,16 @@ def add_custom_to_session():
     sauce_ids = request.form.getlist('sauces', type=int)
     topping_ids = request.form.getlist('toppings', type=int)
 
+    # A bread and cheese must be chosen before the sandwich can be added
     if not bread_id or not cheese_id:
         flash("Please select both a bread and a cheese first!")
         return redirect(url_for('custom_sandwich'))
 
+    # Creates an empty custom cart in the session if one doesn't exist yet
     if 'custom_cart' not in session:
         session['custom_cart'] = []
 
+    # Sorts the sauces/toppings so the sandwich can be compared to existing cart items regardless of pick order
     new_sub_blueprint = {
         'bread': bread_id,
         'cheese': cheese_id,
@@ -318,6 +329,7 @@ def add_custom_to_session():
         cart.append(new_sub_blueprint)
 
     session['custom_cart'] = cart
+    # Clears the in-progress builder now that it's been moved into the cart
     session.pop('custom_sandwich', None)
 
     flash("Your custom sandwich has been added to the cart!")
@@ -326,11 +338,13 @@ def add_custom_to_session():
 
 # --- CHECKOUT PAGE --- #
 
+# Builds the full list of cart items (pre-made and custom) with prices, ready for the checkout page
 @app.route('/checkout')
 def checkout():
     checkout_items = []
     grand_total = 0.0
 
+    # Adds every pre-made sandwich in the cart, working out its subtotal and adding it to the grand total
     premade_cart = session.get('premade_cart', {})
     for item_id_str, quantity in premade_cart.items():
         sandwich = query_db("SELECT name, price FROM PRE_SANDWICH WHERE ID = ?", (int(item_id_str),), one=True)
@@ -348,6 +362,7 @@ def checkout():
                 'subtotal': subtotal
             })
 
+    # Adds every custom sandwich in the cart, working out its subtotal and adding it to the grand total
     custom_cart = session.get('custom_cart', [])
     for index, custom in enumerate(custom_cart):
         single_unit_price = calculate_custom_sandwich_price(custom)
@@ -356,6 +371,7 @@ def checkout():
         subtotal = single_unit_price * qty
         grand_total += subtotal
         
+        # Looks up the bread and cheese names so the checkout page can show a readable description
         bread_row = query_db("SELECT name FROM BREAD WHERE ID = ?", (custom['bread'],), one=True)
         cheese_row = query_db("SELECT name FROM CHEESE WHERE ID = ?", (custom['cheese'],), one=True)
         
@@ -515,13 +531,17 @@ def update_cart_quantity(item_id):
         
     return redirect(url_for('checkout'))
 
+# Updates the number of a custom sub in the cart or deletes it if set to 0
 @app.post('/cart/update-custom-quantity/<int:index>')
 def update_custom_quantity(index):
+    # Reads the number chosen in dropdown
     quantity = request.form.get('quantity', type=int)
     
     if 'custom_cart' in session:
         cart = session['custom_cart']
+        # Makes sure the index actually exists in the cart before changing anything
         if 0 <= index < len(cart):
+            # If the quantity is 1 or more, update the cart, otherwise remove the item
             if quantity and quantity > 0:
                 cart[index]['quantity'] = quantity
             else:
@@ -665,11 +685,21 @@ def purchase_thanks():
         session.pop('premade_cart', None)
         session.pop('custom_cart', None)
 
+        # Look up the customer's preferred store, this is where the order is picked up from
+        store_row = query_db(
+            "SELECT STORES.name FROM CUSTOMER LEFT JOIN STORES ON CUSTOMER.pref_store = STORES.ID WHERE CUSTOMER.ID = ?",
+            (customer_id,),
+            one=True
+        )
+        # Generic message if the customer has no preferred store saved
+        store_name = store_row[0] if store_row and store_row[0] else "your preferred store"
+
     except sqlite3.Error as e:
         print(f"Database transaction failure: {e}")
         return "An internal error occurred saving your transaction.", 500
 
-    return render_template("thanks.html")
+    # Show the confirmation page with the store the order will be picked up from
+    return render_template("thanks.html", store_name=store_name)
 
 # Starts up the website server
 if __name__ == "__main__":
