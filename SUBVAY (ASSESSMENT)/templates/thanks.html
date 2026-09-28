@@ -1,24 +1,38 @@
-<!-- Uses the shared layout (navigation bar, styles) so the page matches the rest of the site -->
+<!-- Shared layout -->
 {% extends "layout.html" %}
 
-<!-- Fills the main content area of the layout with the order confirmation -->
+{% block title %}Order Complete{% endblock %}
+
+<!-- Thank you page content -->
 {% block content %}
-    <!-- Dark card that holds the whole confirmation message -->
-    <div class="thanks-container">
-        <!-- Green tick inside a circle -->
-        <svg class="thanks-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#00b83f" stroke-width="8"/>
-            <path d="M28 52 L44 68 L73 36" fill="none" stroke="#00b83f" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+<div class="login-page-wrapper thanks-page-wrapper">
+    <div class="container">
+        <!-- Confirmation card -->
+        <div class="thanks-card">
+            <!-- Success icon -->
+            <svg class="thanks-icon" viewBox="0 0 100 100" xmlns="http://w3.org" aria-hidden="true">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#00b83f" stroke-width="8"/>
+                <path d="M28 52 L44 68 L73 36" fill="none" stroke="#00b83f" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
 
-        <!-- Main thank you heading -->
-        <h2>Thank you for your purchase!</h2>
+            <!-- Heading -->
+            <h2>Thank you for your purchase!</h2>
 
-        <!-- Pickup message with store name -->
-        <p class="thanks-message">Order confirmed! Your meal is being processed for pickup at {{ store_name }}. Please have your order number ready when you arrive.</p>
+            <!-- Pickup message -->
+            <p class="thanks-message">
+                Order confirmed! Your meal is being processed for pickup at <strong>{{ store_name }}</strong>. Please have your order number ready when you arrive.
+            </p>
 
-        <!-- Closing thank you message -->
-        <p class="thanks-small">We appreciate your business and hope to see you again soon!<br>Thanks again from The Subvay Team</p>
+            <!-- Closing message -->
+            <p class="thanks-small">
+                We appreciate your business and hope to see you again soon!<br>Thanks again from The Subvay Team
+            </p>
+
+            <!-- Back to menu button -->
+            <a href="{{ url_for('menu') }}" class="thanks-link">
+                <button type="button" class="thanks-red-menu-btn">Back To Menu</button>
+            </a>
+        </div>
     </div>
-
+</div>
 {% endblock %}

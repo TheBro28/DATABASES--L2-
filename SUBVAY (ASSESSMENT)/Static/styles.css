@@ -439,7 +439,8 @@ p a:hover {
 /* --- THANK YOU PAGE --- */
 
 /* Card container for the thank you message */
-.thanks-container {
+.thanks-container,
+.thanks-card {
     width: 90%;
     max-width: 660px;
     margin: 70px auto;
@@ -459,7 +460,8 @@ p a:hover {
 }
 
 /* Main heading */
-.thanks-container h2 {
+.thanks-container h2,
+.thanks-card h2 {
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 10px;
@@ -479,7 +481,27 @@ p a:hover {
     font-size: 12px;
     line-height: 1.2;
     color: #ddd;
-    margin-bottom: 0;
+    margin-bottom: 30px !important;
+}
+
+.thanks-red-menu-btn {
+    margin-bottom: 0 !important;
+    width: 100% !important;
+    border-radius: 15px !important;
+    background: #dc3545 !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 600 !important;
+    font-size: 18px !important;
+    padding: 18px !important;
+    cursor: pointer !important;
+    transition: background 0.3s ease, transform 0.2s ease;
+    letter-spacing: 0.5px;
+}
+
+.thanks-red-menu-btn:hover {
+    background: #b02a37 !important;
+    transform: translateY(-1px);
 }
 
 /* --- 404 ERROR PAGE CUSTOMIZATIONS --- */
@@ -551,3 +573,5 @@ p a:hover {
 .error-home-btn:hover {
     background: #b02a37 !important;
 }
+
+
