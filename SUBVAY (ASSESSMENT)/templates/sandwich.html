@@ -1,28 +1,34 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container detail-page-wrapper">
-<!--Back to menu button with left arrow-->
-    <p><a href="{{ url_for('menu') }}">&larr; Back to Menu</a></p>
+<div class="sandwich-hero">
 
-    <div class="detail-card">
-        <!-- Index 3: Image URL -->
-        <img class="detail-image" src="{{ sandwich[3] }}" alt="{{ sandwich[1] }}">
-        
-        <div class="detail-info">
-            <!-- Index 1: Name -->
-            <h1>{{ sandwich[1] }}</h1>
-            
-            <!-- Index 4: Price formatted -->
-            <h3 class="detail-price">Price: ${{ "%.2f"|format(sandwich[4]) }}</h3>
-            
-            <!-- Index 2: Description -->
-            <p class="detail-description">{{ sandwich[2] }}</p>
-            
-            <!-- Triggers the premade session cart route, passing the sandwich ID directly -->
-            <a href="{{ url_for('add_premade_to_session', item_id=sandwich[0]) }}" class="add-to-cart-btn" style="text-align: center; display: inline-block; text-decoration: none; width: 100%;">Add to cart</a>
-
-        </div>
+    <!-- Sandwich image -->
+    <div class="sandwich-hero-image-container">
+        <img src="{{ sandwich[3] }}" alt="{{ sandwich[1] }}">
     </div>
+
+    <div class="sandwich-hero-content">
+        <!--Back to menu button with left arrow-->
+        <p class="sandwich-hero-back"><a href="{{ url_for('menu') }}">&larr; Back to Menu</a></p>
+
+        <!-- Index 1: Name -->
+        <h1 class="sandwich-hero-name">{{ sandwich[1] }}</h1>
+
+        <!-- Index 4: Price formatted -->
+        <p class="sandwich-hero-price">${{ "%.2f"|format(sandwich[4]) }}</p>
+
+        <!-- Index 2: Description -->
+        <p class="sandwich-hero-description">{{ sandwich[2] }}</p>
+
+        <!-- Triggers the premade session cart route, passing the sandwich ID directly -->
+        <a href="{{ url_for('add_premade_to_session', item_id=sandwich[0]) }}" class="sandwich-hero-btn">
+            Add To Cart
+            <span class="sandwich-hero-btn-icon">
+                <span class="material-icons">arrow_forward</span>
+            </span>
+        </a>
+    </div>
+
 </div>
 {% endblock %}

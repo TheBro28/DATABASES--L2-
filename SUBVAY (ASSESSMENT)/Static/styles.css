@@ -168,53 +168,136 @@ p a:hover {
     margin: 0 auto;
 }
 
-.detail-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 40px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+/* sandwich hero section */
+.sandwich-hero {
     display: flex;
-    gap: 40px;
     align-items: center;
-    margin-top: 20px;
-}
-
-.detail-image {
     width: 100%;
-    max-width: 350px;
-    height: auto;
-    object-fit: contain;
-    mix-blend-mode: multiply;
-    filter: contrast(1.05);
+    padding: 50px 5vw;
+    gap: 40px;
+    overflow-x: hidden;
 }
 
-.detail-info {
+/* Sandwich image container */
+.sandwich-hero-image-container {
+    position: relative;
+    width: 38%;
+    aspect-ratio: 3 / 4;
+    flex-shrink: 0;
+}
+
+/* Sandwich image */
+.sandwich-hero-image-container img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 150%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center;
+}
+
+.sandwich-hero-content {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 3vw 0 0;
+}
+
+.sandwich-hero-back {
     text-align: left;
+    margin-bottom: 15px;
 }
 
-.detail-info h1 {
-    font-size: 32px;
-    margin-bottom: 10px;
-    color: #222;
+/* Back link styles */
+.sandwich-hero-back a {
+    color: #fff;
+    font-family: "Work Sans", sans-serif;
+    font-size: 14px;
+    text-decoration: none;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-.detail-price {
-    font-size: 22px;
-    color: #7494ec;
+/* Yellow hover on back link */
+.sandwich-hero-back a:hover {
+    color: #ffc107;
+    text-decoration: underline;
+}
+
+/* Sandwich name */
+.sandwich-hero-name {
+    font-family: "Rubik Dirt", cursive;
+    font-size: clamp(36px, 7vw, 96px);
+    line-height: 1.05;
+    color: #ff2b2b;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+/* Price styles */
+.sandwich-hero-price {
+    font-family: "Work Sans", sans-serif;
+    font-size: clamp(20px, 2.2vw, 34px);
+    font-weight: 700;
+    color: #ffc107;
+    text-align: left;
     margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.detail-description {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #555;
+/* Sandwich description */
+.sandwich-hero-description {
+    font-family: "Fredoka", sans-serif;
+    font-size: clamp(15px, 1.6vw, 20px);
+    line-height: 1.7;
+    color: #fff;
+    max-width: 46vw;
     margin-bottom: 25px;
     text-align: left;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-.add-to-cart-btn {
-    max-width: 200px;
+/* Add to Cart button */
+.sandwich-hero-btn {
+    font-family: "Work Sans", sans-serif;
+    font-weight: 600;
+    font-size: clamp(15px, 1.1vw, 19px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: fit-content;
+    background: transparent;
+    border: 2px solid #ff2b2b;
+    color: #ff2b2b;
+    border-radius: 10px;
+    padding: 14px 14px 14px 32px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+/* Hover effect for the Add to Cart button */
+.sandwich-hero-btn:hover {
+    background: rgba(255, 43, 43, 0.1);
+}
+
+/* Button icon */
+.sandwich-hero-btn-icon {
+    background: #ff2b2b;
+    color: #fff;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Material icon inside the arrow button */
+.sandwich-hero-btn-icon .material-icons {
+    font-size: 20px;
 }
 
 /* --- MENU TITLE SEPARATION LINE --- */
