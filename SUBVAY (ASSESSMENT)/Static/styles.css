@@ -574,4 +574,108 @@ p a:hover {
     background: #b02a37 !important;
 }
 
+/* --- HISTORY PAGE --- */
 
+/* Keeps the history content centred */
+.history-page-wrapper {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 20px 15px 60px;
+}
+
+/* Yellow page heading */
+.history-title {
+    color: #ffc107;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+/* Light grey line under the heading */
+.history-divider {
+    border: none;
+    border-top: 1px solid #666;
+    margin: 0 0 25px 0;
+}
+
+/* Dark card that holds all of the history content */
+.history-card {
+    background: #262626;
+    color: #e0e0e0;
+    border-radius: 10px;
+    padding: 35px 40px;
+}
+
+/* Yellow sub-headings for each section */
+.history-section-title {
+    color: #ffc107;
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* Paragraph text inside the card */
+.history-card p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #ccc;
+    text-align: left;
+    margin-bottom: 16px;
+}
+
+/* Full width photo */
+.history-image-full {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    display: block;
+}
+
+/* Thin line separating each section */
+.history-section-divider {
+    border: none;
+    border-top: 1px solid #444;
+    margin: 25px 0;
+}
+
+/* Two-column row */
+.history-row {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+/* Text side of a two-column row */
+.history-row-text {
+    flex: 1;
+}
+
+/* Photo side of a two-column row */
+.history-image-half {
+    width: 260px;
+    max-width: 40%;
+    height: auto;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+/* Small trademark footnote */
+.history-footnote {
+    font-size: 11px;
+    font-style: italic;
+    color: #999;
+    margin: 20px 0 0 0;
+}
+
+/* Makes this section stack vertically on mobile phones */
+@media (max-width: 600px) {
+    .history-row {
+        flex-direction: column;
+    }
+    .history-image-half {
+        width: 100%;
+        max-width: 100%;
+    }
+}

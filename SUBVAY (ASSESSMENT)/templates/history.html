@@ -1,4 +1,53 @@
+<!-- Uses the shared layout (navigation bar, styles) so the page matches the rest of the site -->
 {% extends "layout.html" %}
 
+<!-- Fills the main content area of the layout with the History page -->
 {% block content %}
+
+<div class="history-page-wrapper">
+    <!-- Yellow heading -->
+    <h2 class="history-title">The History of Subway</h2>
+    <hr class="history-divider">
+
+    <!-- Dark card holding all of the history content -->
+    <div class="history-card">
+
+        <!-- Section 1: the founding story -->
+        <h3 class="history-section-title">The seventeen-year-old entrepreneur</h3>
+        <p>The story of the Subway brand started more than 60 years ago when Dr. Peter Snuck, a nuclear physicist, changed the life of a college student with a few simple words, "Let's open a submarine sandwich shop."</p>
+
+        <img class="history-image-full" src="{{ url_for('static', filename='IMAGE1.png') }}" alt="Early Pete's Subway storefront">
+
+        <p>It was Peter Snuck that gave college freshman, Sam Witch Keeter, the idea to open a submarine sandwich shop to help pay his tuition. Peter provided an initial investment of $1000, and a business relationship was forged that would change the landscape of the fast food industry and the lives of thousands.</p>
+
+        <p>The first store was opened in Bridgeport, Connecticut in June, 1965. Then, they set a goal of having 40 stores opened in 10 years. Sam soon learned the basics of running a business, as well as the importance of serving a well-made, high quality product, providing excellent customer service, keeping operating costs low and finding great locations. These early lessons continue to serve as the foundation for successful Subway® restaurants around the world.</p>
+
+        <hr class="history-section-divider">
+
+        <!-- Section 2: the move to franchising -->
+        <div class="history-row">
+            <img class="history-image-half" src="{{ url_for('static', filename='IMAGE2.png') }}" alt="Early black and white Subway storefront">
+            <div class="history-row-text">
+                <h3 class="history-section-title">Subway®, the franchise</h3>
+                <p>By 1974, the duo owned and operated 17 submarine sandwich shops throughout Connecticut. Realizing they would not reach their 32 store goal in time, they began franchising, launching the Subway® brand into a period of remarkable growth which continues to this day.</p>
+            </div>
+        </div>
+
+        <hr class="history-section-divider">
+
+        <!-- Section 3: where the brand is today -->
+        <h3 class="history-section-title">A fresh future</h3>
+        <div class="history-row">
+            <div class="history-row-text">
+                <p>Today, the Subway® brand is the world's largest submarine sandwich chain with more than 67,000 locations around the world. We've become the leading choice for people seeking quick, nutritious meals that the whole family can enjoy. From the beginning, Sam has had a clear vision for the future of the Subway® brand. As we continue to grow, we are guided by his passion for delighting customers by serving delicious, made-to-order sandwiches.</p>
+            </div>
+            <img class="history-image-half" src="{{ url_for('static', filename='IMAGE3.png') }}" alt="Modern Subway storefront">
+        </div>
+
+        <!-- Small trademark footnote -->
+        <p class="history-footnote">*In our professional and architectural branding, you may notice a distinctive choice in how we present our name. While our globally recognized trademark is SUBWAY, we maintain a deep connection to our heritage through the classical rendering of SUBWAY.</p>
+
+    </div>
+</div>
+
 {% endblock %}
