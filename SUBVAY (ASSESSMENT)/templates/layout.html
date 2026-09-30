@@ -17,10 +17,10 @@
 
 <!-- Navigation bar block -->
 {% block nav %}
-<nav class="navbar bg-body-tertiary">
+<nav class="navbar site-navbar">
     <div class="container-fluid">
         <!-- links -->
-        <ul class="navbar-nav d-flex flex-row justify-content-around mb-0 w-100">
+        <ul class="navbar-nav d-flex flex-row justify-content-evenly align-items-center mb-0 w-100">
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="/">Home</a>
             </li>
@@ -34,17 +34,26 @@
                 <a class="nav-link" href="{{ url_for('history') }}">History</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('checkout') }}">Checkout</a>
+                <a class="nav-link navbar-checkout-btn" href="{{ url_for('checkout') }}">
+                    <span class="material-icons">shopping_cart</span>
+                    Checkout
+                </a>
             </li>
             
             <!-- Dynamic Sign In -->
             {% if session.user and user_name %}
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('account_details') }}">{{ user_name }}</a>
+                <a class="nav-link navbar-signin-link" href="{{ url_for('account_details') }}">
+                    <span class="material-icons">person</span>
+                    {{ user_name }}
+                </a>
             </li>
             {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="/signin">Sign In</a>
+                <a class="nav-link navbar-signin-link" href="/signin">
+                    <span class="material-icons">person</span>
+                    Sign In
+                </a>
             </li>
             {% endif %}
         </ul>

@@ -14,26 +14,33 @@
         <!-- Index 0: ID --->
         <a href="{{ url_for('sandwich', id=sandwich[0]) }}">
             <div class="sandwich-card">
-                <!-- Index 3: image_url -->
-                <img src="{{ sandwich[3] }}" alt="{{ sandwich[1] }}" width="250">
-                
-                <!-- Index 1: name -->
-                <h2>{{ sandwich[1] }}</h2>
-                
-                <!-- Index 4: price -->
-                <p class="price-text">Price: ${{ "%.2f"|format(sandwich[4]) }}</p>
+                <div class="sandwich-card-image-box">
+                    <!-- Index 3: image_url -->
+                    <img src="{{ sandwich[3] }}" alt="{{ sandwich[1] }}">
+                </div>
+                <div class="sandwich-card-info-box">
+                    <!-- Index 1: name -->
+                    <h2>{{ sandwich[1] }}</h2>
+
+                    <!-- Index 4: price -->
+                    <p class="price-text">${{ "%.2f"|format(sandwich[4]) }}</p>
+                </div>
             </div>
         </a>
 
         {% endfor %}
     {% endif %}
 
-    <!-- Custom sandwich builder card, styled to match the regular sandwich cards -->
+    <!-- Custom sandwich builder card -->
     <a href="{{ url_for('custom_sandwich') }}">
         <div class="sandwich-card">
-            <span class="material-icons custom-sandwich-icon">add_circle</span>
-            <h2>Make Your Own</h2>
-            <p class="price-text">Starting from ${{ "%.2f"|format(custom_starting_price) }}</p>
+            <div class="sandwich-card-image-box">
+                <span class="material-icons custom-sandwich-icon">add_circle</span>
+            </div>
+            <div class="sandwich-card-info-box">
+                <h2>Make Your Own</h2>
+                <p class="price-text">${{ "%.2f"|format(custom_starting_price) }}</p>
+            </div>
         </div>
     </a>
 
