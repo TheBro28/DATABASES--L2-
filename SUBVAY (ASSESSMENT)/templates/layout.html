@@ -61,12 +61,12 @@
 </nav>
 {% endblock %}
 
-<!-- Feedback messages -->
-{% with messages = get_flashed_messages() %}
+<!-- Feedback messages - categories now show success or error (green or red) -->
+{% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <div class="flash-messages-container">
-      {% for message in messages %}
-        <div class="flash-message alert-success">
+      {% for category, message in messages %}
+        <div class="flash-message {{ 'alert-danger' if category == 'error' else 'alert-success' }}">
           <span class="message-text">{{ message }}</span>
           <button class="close-flash-btn" onclick="this.parentElement.style.display='none';">&times;</button>
         </div>

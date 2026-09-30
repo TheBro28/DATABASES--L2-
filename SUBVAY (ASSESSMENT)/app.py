@@ -1,6 +1,7 @@
 # Import the tools needed to build the website and handle data
 from flask import Flask, g, render_template, request, redirect, session, url_for, Blueprint, flash
 import sqlite3, hashlib
+from datetime import datetime, timedelta
 
 # Defines the database as a constant
 DATABASE = 'subvay.db'
@@ -275,10 +276,17 @@ def add_premade_to_session(item_id):
     sandwich = query_db("SELECT name FROM PRE_SANDWICH WHERE ID = ?", (item_id,), one=True)
     if not sandwich:
         return "Sandwich not found", 404
-        
-    # Increases the quantity by 1 if it's already in the cart, otherwise adds it with a quantity of 1
+
     cart = session['premade_cart']
-    cart[item_id_str] = cart.get(item_id_str, 0) + 1
+    current_qty = cart.get(item_id_str, 0)
+
+    # Stops the quantity going past the cap of 99 and shows an error message if the customer tries to add more
+    if current_qty >= 99:
+        flash(f'Maximum number of {sandwich[0]} in cart', 'error')
+        return redirect(request.referrer or '/menu')
+
+    # Increases the quantity by 1
+    cart[item_id_str] = current_qty + 1
     session['premade_cart'] = cart
     
     # Lets the customer know it was added, then sends them back to whichever page they came from
@@ -347,15 +355,16 @@ def checkout():
     # Adds every pre-made sandwich in the cart, working out its subtotal and adding it to the grand total
     premade_cart = session.get('premade_cart', {})
     for item_id_str, quantity in premade_cart.items():
-        sandwich = query_db("SELECT name, price FROM PRE_SANDWICH WHERE ID = ?", (int(item_id_str),), one=True)
+        # Shows each sandwich's ingredients list
+        sandwich = query_db("SELECT name, ingredients, price FROM PRE_SANDWICH WHERE ID = ?", (int(item_id_str),), one=True)
         if sandwich:
-            name, price = sandwich
+            name, ingredients, price = sandwich
             subtotal = price * quantity
             grand_total += subtotal
             checkout_items.append({
                 'id': item_id_str,
                 'name': name,
-                'type': 'Pre-made Sub',
+                'description': ingredients,
                 'is_premade': True,
                 'quantity': quantity,
                 'price': price,
@@ -367,29 +376,128 @@ def checkout():
     for index, custom in enumerate(custom_cart):
         single_unit_price = calculate_custom_sandwich_price(custom)
         qty = custom.get('quantity', 1)
-        
+
         subtotal = single_unit_price * qty
         grand_total += subtotal
-        
-        # Looks up the bread and cheese names so the checkout page can show a readable description
+
+        # Looks up the bread, cheese, sauce, and topping names so the checkout page can show a ingredient list
         bread_row = query_db("SELECT name FROM BREAD WHERE ID = ?", (custom['bread'],), one=True)
         cheese_row = query_db("SELECT name FROM CHEESE WHERE ID = ?", (custom['cheese'],), one=True)
-        
-        b_name = bread_row if bread_row else "Unknown Bread"
-        c_name = cheese_row if cheese_row else "Unknown Cheese"
-        description = f"Bread: {b_name}, Cheese: {c_name}"
-        
+
+        sauce_names = []
+        for sauce_id in custom.get('sauces', []):
+            sauce_row = query_db("SELECT name FROM SAUCE WHERE ID = ?", (sauce_id,), one=True)
+            if sauce_row:
+                sauce_names.append(sauce_row[0])
+
+        topping_names = []
+        for topping_id in custom.get('toppings', []):
+            topping_row = query_db("SELECT name FROM TOPPINGS WHERE ID = ?", (topping_id,), one=True)
+            if topping_row:
+                topping_names.append(topping_row[0])
+
+        # Builds a plain comma-separated ingredient list, matching the style of a pre-made sandwich's ingredients
+        ingredient_list = []
+        if bread_row:
+            ingredient_list.append(bread_row[0])
+        if cheese_row:
+            ingredient_list.append(cheese_row[0])
+        ingredient_list.extend(topping_names)
+        ingredient_list.extend(sauce_names)
+        description = ", ".join(ingredient_list)
+
         checkout_items.append({
             'cart_index': int(index),
-            'name': f'Custom Sub #{index + 1}',
-            'type': description,
+            'name': 'Custom Sandwich',
+            'description': description,
             'is_premade': False,
             'quantity': qty,
             'price': single_unit_price,
             'subtotal': subtotal
         })
 
-    return render_template("checkout.html", items=checkout_items, grand_total=grand_total)
+    # Pulls the list of all stores to fill the dropdown on the checkout page
+    all_stores = query_db("SELECT ID, name FROM STORES")
+
+    # Defaults the selected store to the logged-in customer's saved preferred store, the first time the page is visited this session
+    if 'selected_store_id' not in session:
+        email = session.get('user')
+        if email:
+            pref_row = query_db(
+                "SELECT STORES.ID FROM CUSTOMER LEFT JOIN STORES ON CUSTOMER.pref_store = STORES.ID WHERE CUSTOMER.email = ?",
+                (email,), one=True
+            )
+            if pref_row and pref_row[0]:
+                session['selected_store_id'] = pref_row[0]
+
+    selected_store_id = session.get('selected_store_id')
+
+    # Defaults the pickup time to 15 minutes from now if the customer hasn't chosen one yet
+    # Stored in the session so it carries over if the customer leaves and comes back to the checkout page
+    if 'pickup_time_value' not in session:
+        default_dt = datetime.now() + timedelta(minutes=15)
+        session['pickup_time_value'] = default_dt.strftime('%H:%M')
+        session['pickup_time_display'] = default_dt.strftime('%I:%M%p').lstrip('0').lower()
+
+    # Finds pre-made sandwiches not already in the cart, for the "Hungry for more?" section
+    cart_ids_in_use = set()
+    for item_id_str in premade_cart.keys():
+        cart_ids_in_use.add(int(item_id_str))
+
+    # Shows each sandwich's ingredients
+    all_premade = query_db("SELECT ID, name, ingredients, price FROM PRE_SANDWICH")
+    hungry_for_more = []
+    for s in all_premade:
+        # Skips anything already sitting in the cart
+        if s[0] in cart_ids_in_use:
+            continue
+        # Never shows the "Megatronus Heart Disease" sandwich as its too much to add with other items
+        if s[1] == 'Megatronus Heart Disease':
+            continue
+        hungry_for_more.append(s)
+        # Only ever shows 5 sandwiches at a time
+        if len(hungry_for_more) == 5:
+            break
+
+    return render_template(
+        "checkout.html",
+        items=checkout_items,
+        grand_total=grand_total,
+        all_stores=all_stores,
+        selected_store_id=selected_store_id,
+        pickup_time_value=session.get('pickup_time_value'),
+        hungry_for_more=hungry_for_more
+    )
+
+# Updates which store the order will be collected from
+@app.post('/checkout/set-store')
+def set_checkout_store():
+    store_id = request.form.get('store_id', type=int)
+    if store_id:
+        session['selected_store_id'] = store_id
+    return redirect(url_for('checkout'))
+
+# Updates the pickup time, only allowing a time at least 10 minutes from right now
+@app.post('/checkout/set-time')
+def set_checkout_time():
+    time_str = request.form.get('pickup_time')
+
+    try:
+        hour, minute = map(int, time_str.split(':'))
+        chosen_dt = datetime.now().replace(hour=hour, minute=minute, second=0, microsecond=0)
+    except (ValueError, AttributeError, TypeError):
+        flash("Please choose a valid time.")
+        return redirect(url_for('checkout'))
+
+    # Rejects any time less than 10 minutes away from right now
+    if chosen_dt < datetime.now() + timedelta(minutes=10):
+        flash("Please choose a pickup time at least 10 minutes from now.")
+        return redirect(url_for('checkout'))
+
+    # Stores the chosen time in the session in two formats: one for the input box, one for display on screen
+    session['pickup_time_value'] = f"{hour:02d}:{minute:02d}"
+    session['pickup_time_display'] = chosen_dt.strftime('%I:%M%p').lstrip('0').lower()
+    return redirect(url_for('checkout'))
 
 # --- DATABASE LOGIN HANDLING  --- #
 
@@ -517,9 +625,13 @@ def page_not_found(e):
 # Updates the number of pre-made subs in the cart or deletes them if set to 0
 @app.post('/cart/update-quantity/<string:item_id>')
 def update_cart_quantity(item_id):
-    # Reads the number chosen in dropdown
+    # Reads the number typed or set via the +/- buttons
     quantity = request.form.get('quantity', type=int)
-    
+
+    # Keeps the quantity within the 1-99 range the input allows
+    if quantity is not None:
+        quantity = max(1, min(quantity, 99))
+
     if 'premade_cart' in session:
         cart = session['premade_cart']
         # If the quantity is 1 or more, update the cart, otherwise remove the item
@@ -534,9 +646,13 @@ def update_cart_quantity(item_id):
 # Updates the number of a custom sub in the cart or deletes it if set to 0
 @app.post('/cart/update-custom-quantity/<int:index>')
 def update_custom_quantity(index):
-    # Reads the number chosen in dropdown
+    # Reads the number typed or set via the +/- buttons
     quantity = request.form.get('quantity', type=int)
-    
+
+    # Keeps the quantity within the 1-99 range the input allows
+    if quantity is not None:
+        quantity = max(1, min(quantity, 99))
+
     if 'custom_cart' in session:
         cart = session['custom_cart']
         # Makes sure the index actually exists in the cart before changing anything
@@ -574,8 +690,6 @@ def delete_custom_item(index):
             flash("Custom sub removed.")
             
     return redirect(url_for('checkout'))
-
-    # NOT COMPLETED TO BE CONTINUED
 
 # --- THANK YOU, ORDER COMPLETION, & DATABASE COMMIT --- #
 
@@ -684,6 +798,10 @@ def purchase_thanks():
         # Clear the session carts after a successful order
         session.pop('premade_cart', None)
         session.pop('custom_cart', None)
+        # Clears the store/time choices too, so the next order starts fresh
+        session.pop('selected_store_id', None)
+        session.pop('pickup_time_value', None)
+        session.pop('pickup_time_display', None)
 
         # Look up the customer's preferred store, this is where the order is picked up from
         store_row = query_db(

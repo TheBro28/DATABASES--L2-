@@ -94,7 +94,81 @@ function handleBuilderChange(type) {
     syncBuilderSelection();
 }
 
-// Restores the correct description and total on page load if choices were carried over from the session
+// Opens time picker when the clock is clicked
+function openTimePicker(event) {
+    const input = document.getElementById('pickup-time-input');
+    if (!input) return;
+    // Avoids double-triggering if the time picker is already open
+    if (event.target === input) return;
+    if (input.showPicker) {
+        input.showPicker();
+    } else {
+        input.focus();
+    }
+}
+
+// Adds up every item's price x quantity currently shown on the checkout page and updates the Cart Total
+function updateCartGrandTotal() {
+    let total = 0;
+    document.querySelectorAll('.qty-form').forEach(form => {
+        const price = parseFloat(form.dataset.price);
+        const qty = parseInt(form.querySelector('.qty-input').value, 10);
+        if (!isNaN(price) && !isNaN(qty)) {
+            total += price * qty;
+        }
+    });
+    const totalEl = document.getElementById('cart-total-value');
+    if (totalEl) {
+        totalEl.textContent = '$' + total.toFixed(2);
+    }
+}
+
+// Updates the quantity on screen instantly and saves it to the server in the background
+function submitQtyForm(input) {
+    // Validates the qty is between 1 and 99 and updates the input field to match
+    let quantity = parseInt(input.value, 10);
+    if (isNaN(quantity)) quantity = 1;
+    quantity = Math.max(1, Math.min(quantity, 99));
+    input.value = quantity;
+
+    const form = input.closest('.qty-form');
+    const price = parseFloat(form.dataset.price);
+
+    // Updates the subtotal for this item on screen, hiding it if the quantity is 1
+    const orderItem = form.closest('.checkout-order-item');
+    const subtotalWrapper = orderItem.querySelector('.checkout-order-item-subtotal');
+    const subtotalValue = orderItem.querySelector('.subtotal-value');
+    if (quantity > 1) {
+        subtotalWrapper.style.display = '';
+        subtotalValue.textContent = (price * quantity).toFixed(2);
+    } else {
+        subtotalWrapper.style.display = 'none';
+    }
+
+    // Recalculates the overall Cart Total across every item on the page
+    updateCartGrandTotal();
+
+    // Saves the new quantity to the session in the background
+    fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form)
+    }).catch(() => {
+        // A failed background save shouldn't interrupt the quantity shown on screen
+    });
+}
+
+// Increases or decreases a quantity input by 1, thens sends to submitQtyForm to update and save it
+function adjustQty(button, delta) {
+    const form = button.closest('form');
+    const input = form.querySelector('.qty-input');
+    let newValue = parseInt(input.value, 10) + delta;
+    if (isNaN(newValue)) newValue = 1;
+    newValue = Math.max(1, Math.min(newValue, 99));
+    input.value = newValue;
+    submitQtyForm(input);
+}
+
+// Restores correct details on screen if the user navigates back to the checkout page after leaving it
 document.addEventListener('DOMContentLoaded', () => {
     loadBuilderPrices();
     updateSelectionDescription('bread');

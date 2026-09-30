@@ -1,67 +1,123 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<h2>Checkout</h2>
+<div class="checkout-page-wrapper">
 
-<div class="checkout-container">
-    {% if items %}
-        <table class="order-table">
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Details</th>
-                    <th>Qty</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in items %}
-                <tr>
-                    <td><strong>{{ item.name }}</strong></td>
-                    <td><small>{{ item.type }}</small></td>
-                    <td>
-                        {% if item.is_premade %}
-                        <form action="/cart/update-quantity/{{ item.id }}" method="POST" style="display:inline;">
-                            <select name="quantity" onchange="this.form.submit()" class="checkout-qty-dropdown">
-                                {% for q in range(0, 11) %}
-                                <option value="{{ q }}" {% if item.quantity == q %}selected{% endif %}>{{ q }}{% if q == 0 %} (Remove){% endif %}</option>
-                                {% endfor %}
-                            </select>
-                        </form>
-                        {% else %}
-                        <form action="/cart/update-custom-quantity/{{ item.cart_index }}" method="POST" style="display:inline;">
-                            <select name="quantity" onchange="this.form.submit()" class="checkout-qty-dropdown">
-                                {% for q in range(0, 11) %}
-                                <option value="{{ q }}" {% if item.quantity == q %}selected{% endif %}>{{ q }}{% if q == 0 %} (Remove){% endif %}</option>
-                                {% endfor %}
-                            </select>
-                        </form>
-                        {% endif %}
-                    </td>
+    <h1 class="checkout-heading">Basket</h1>
+    <hr class="checkout-heading-divider">
 
-                    <td>${{ "%.2f"|format(item.price) }}</td>
-                    <td>${{ "%.2f"|format(item.subtotal) }}</td>
-                    <td>
-
-                        {% if item.type == 'Pre-made Sub' %}
-                            <a href="/cart/delete-premade/{{ item.id }}" class="delete-link" style="color: #d9534f; text-decoration: none;">❌ Delete</a>
-                        {% else %}
-                            <a href="/cart/delete-custom/{{ item.cart_index }}" class="delete-link" style="color: #d9534f; text-decoration: none;">❌ Delete</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <div class="total-box">
-            <h3>Grand Total: ${{ "%.2f"|format(grand_total) }}</h3>
-            <a href="/checkout/thanks" class="btn checkout-btn">Purchase</a>
+    <!-- Collection address + pickup time card -->
+    <div class="checkout-info-bar">
+        <div class="checkout-address">
+            <strong>Collection address:</strong>
+            <form action="{{ url_for('set_checkout_store') }}" method="POST" class="store-select-form">
+                <select name="store_id" onchange="this.form.submit()" class="store-select">
+                    <option value="">--Select a store--</option>
+                    {% for store in all_stores %}
+                    <option value="{{ store[0] }}" {% if store[0] == selected_store_id %}selected{% endif %}>{{ store[1] }}</option>
+                    {% endfor %}
+                </select>
+            </form>
         </div>
-    {% else %}
-        <p>Your session cart is empty! <a href="/menu">Go back to the menu</a> to add sandwiches.</p>
-    {% endif %}
+
+        <!-- click to open time picker -->
+        <label class="checkout-time" for="pickup-time-input" onclick="openTimePicker(event)">
+            <span>Today at:</span>
+            <form action="{{ url_for('set_checkout_time') }}" method="POST" class="time-inline-form">
+                <input type="time" id="pickup-time-input" name="pickup_time" value="{{ pickup_time_value }}" class="time-inline-input" onchange="this.form.submit()" required>
+            </form>
+        </label>
+    </div>
+
+    <div class="checkout-main-grid">
+
+        <!-- YOUR ORDER panel -->
+        <div class="checkout-panel">
+            <h2 class="checkout-panel-title">Your Order</h2>
+            <hr class="checkout-panel-divider">
+
+            {% if items %}
+                {% for item in items %}
+                <div class="checkout-order-item">
+                    <div class="checkout-order-item-header">
+                        <strong>{{ item.name }}</strong>
+                        <span class="checkout-order-item-price">${{ "%.2f"|format(item.price) }}</span>
+                    </div>
+                    <p class="checkout-order-item-description">{{ item.description }}</p>
+
+                    <div class="checkout-order-item-footer">
+                        <div class="checkout-qty-controls">
+                            <span>Qty:</span>
+                            {% if item.is_premade %}
+                            <form action="/cart/update-quantity/{{ item.id }}" method="POST" class="qty-form" data-price="{{ item.price }}">
+                            {% else %}
+                            <form action="/cart/update-custom-quantity/{{ item.cart_index }}" method="POST" class="qty-form" data-price="{{ item.price }}">
+                            {% endif %}
+                                <button type="button" class="qty-btn" onclick="adjustQty(this, -1)">-</button>
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="99" class="qty-input" onchange="submitQtyForm(this)">
+                                <button type="button" class="qty-btn" onclick="adjustQty(this, 1)">+</button>
+                            </form>
+                        </div>
+
+                        <!-- Subtotal display (hides at qty 1) -->
+                        <span class="checkout-order-item-subtotal" {% if item.quantity <= 1 %}style="display:none;"{% endif %}>Subtotal: $<span class="subtotal-value">{{ "%.2f"|format(item.subtotal) }}</span></span>
+
+                        {% if item.is_premade %}
+                        <a href="{{ url_for('delete_premade_item', item_id=item.id) }}" class="remove-link">Remove from cart</a>
+                        {% else %}
+                        <a href="{{ url_for('delete_custom_item', index=item.cart_index) }}" class="remove-link">Remove from cart</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <hr class="checkout-item-divider">
+                {% endfor %}
+
+                <a href="{{ url_for('menu') }}" class="add-items-btn">Add Items</a>
+            {% else %}
+                <p>Your cart is empty. <a href="{{ url_for('menu') }}">Go back to the menu</a> to add sandwiches.</p>
+            {% endif %}
+        </div>
+
+        <!-- Right column -->
+        <div class="checkout-side-column">
+
+            <!-- YOUR CART panel -->
+            <div class="checkout-panel">
+                <h2 class="checkout-panel-title">Your Cart</h2>
+                <hr class="checkout-panel-divider">
+                <div class="checkout-cart-total-row">
+                    <span>Cart Total</span>
+                    <span id="cart-total-value">${{ "%.2f"|format(grand_total) }}</span>
+                </div>
+                {% if items %}
+                <a href="{{ url_for('purchase_thanks') }}" class="proceed-btn">Purchase</a>
+                {% else %}
+                <button class="proceed-btn" disabled>Purchase</button>
+                {% endif %}
+            </div>
+
+            <!-- HUNGRY FOR MORE panel -->
+            {% if hungry_for_more %}
+            <div class="checkout-panel">
+                <h2 class="checkout-panel-title">Hungry for more?</h2>
+                <hr class="checkout-panel-divider">
+                {% for sandwich in hungry_for_more %}
+                <div class="hungry-item">
+                    <div class="hungry-item-text">
+                        <strong>{{ sandwich[1] }}</strong>
+                        <p class="hungry-item-description">{{ sandwich[2] }}</p>
+                    </div>
+                    <div class="hungry-item-action">
+                        <span class="hungry-item-price">${{ "%.2f"|format(sandwich[3]) }}</span>
+                        <a href="{{ url_for('add_premade_to_session', item_id=sandwich[0]) }}" class="hungry-add-btn">Add</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
 </div>
 {% endblock %}
