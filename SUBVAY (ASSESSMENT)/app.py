@@ -460,8 +460,6 @@ def checkout():
 
     # Adds every custom sandwich in the cart, working out its subtotal and adding it to the grand total
     custom_cart = session.get('custom_cart', [])
-        # The pickup time the customer chose on the checkout page, e.g. "14:35"
-    pickup_time = session.get('pickup_time_value')
     for index, custom in enumerate(custom_cart):
         single_unit_price = calculate_custom_sandwich_price(custom)
         qty = custom.get('quantity', 1)
@@ -871,6 +869,7 @@ def purchase_thanks():
             """,
             (customer_id, grand_total, pickup_time)
         )
+        # This is ORDERS.ID (shown to customers as their order number)
         new_order_id = cursor.lastrowid
 
         # Insert each pre-made sandwich into the ORDER_ITEMS table
@@ -962,7 +961,7 @@ def purchase_thanks():
         return "An internal error occurred saving your transaction.", 500
 
     # Show the confirmation page with the store the order will be picked up from
-    return render_template("thanks.html", store_name=store_name)
+    return render_template("thanks.html", store_name=store_name, order_id=new_order_id)
 
 # Starts up the website server
 if __name__ == "__main__":
