@@ -1,20 +1,23 @@
+<!-- This template creates the homepage for the website -->
 {% extends "layout.html" %}
 
+<!-- Sets the text that shows up on the browser tab for this page -->
 {% block title %}Home - Subvay{% endblock %}
 
+<!-- This is the main section containing everything on the page -->
 {% block content %}
-<!-- Banner sits directly under the navbar and spans the full width. All its text is part of the image. -->
+<!-- A large banner image that spans the top of the page -->
 <div class="home-banner">
     <img src="{{ url_for('static', filename='banner.png') }}" alt="Subvay - Best Sandwiches" class="home-banner-img">
 </div>
 
 <div class="home-content">
-    <!-- Sub of the Day image links straight to the Sub of the Day page -->
+    <!-- A clickable image link that takes the customer directly to the "Sub of the Day" offer page -->
     <a href="{{ url_for('sotd') }}" class="home-sotd-link">
         <img src="{{ url_for('static', filename='SoTD.png') }}" alt="Sub of the Day" class="home-sotd-image">
     </a>
 
-    <!-- About text card -->
+    <!-- A text box that describing subvay's values -->
     <div class="home-about-card">
         <p class="home-about-text">
             Beyond the classic sub, we're committed to making every visit a great experience. Whether you're grabbing a quick lunch on the go or sitting down for a fresh salad or wrap, we focus on sustainable sourcing and supporting our local community. Join us so we can craft your next favourite meal together and share our passion for fresh, wholesome food with every guest who walks through our doors. We believe that a great sandwich is about more than just the toppings; it's about the care that goes into every slice and the connection we build with our neighbours. By choosing us, you're not just getting a meal—you're joining a movement that celebrates better ingredients and healthier everyday choices.
