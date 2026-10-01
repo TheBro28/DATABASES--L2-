@@ -2,32 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Custom CSS -->
+    <!-- Loads the site's own styling -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <!-- Dynamic page title -->
+    <!-- The title shown in the browser tab - each page can set its own -->
     <title>{% block title %} Document {% endblock %}</title>
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap - a ready-made toolkit used for layout and buttons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <!-- Google Material Icons -->
+    <!-- Google's icon set, used for things like the cart and person icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <!-- Custom Fonts -->
+    <!-- The custom fonts used around the site -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&family=Fredoka:wght@400;500&family=Work+Sans:wght@400;600&display=swap">
 </head>
 <body>
 
-<!-- Navigation bar block -->
+<!-- The navigation bar shown at the top of every page -->
 {% block nav %}
 <nav class="navbar navbar-expand-lg site-navbar" data-bs-theme="dark">
     <div class="container-fluid">
 
-        <!-- Burger button - only visible on smaller screens -->
+        <!-- The burger menu button, only shown on small screens like phones -->
         <button class="navbar-toggler mx-auto" type="button"
                 data-bs-toggle="collapse" data-bs-target="#mainNavLinks"
                 aria-controls="mainNavLinks" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Links collapse into the burger menu on smaller screens -->
+        <!-- The actual menu links - these hide into the burger button on small screens -->
         <div class="collapse navbar-collapse" id="mainNavLinks">
             <ul class="navbar-nav justify-content-evenly align-items-center mb-0 w-100">
                 <li class="nav-item">
@@ -49,7 +49,7 @@
                     </a>
                 </li>
 
-                <!-- Dynamic Sign In -->
+                <!-- Shows the customer's name if they're logged in, otherwise shows "Sign In" -->
                 {% if session.user and user_name %}
                 <li class="nav-item">
                     <a class="nav-link navbar-signin-link" href="{{ url_for('account_details') }}">
@@ -71,7 +71,7 @@
 </nav>
 {% endblock %}
 
-<!-- Feedback messages - categories now show success or error (green or red) -->
+<!-- Pop-up messages, like "Added to cart" or an error - shows in green or red depending on the type -->
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <div class="flash-messages-container">
@@ -85,14 +85,14 @@
   {% endif %}
 {% endwith %}
 
-<!-- content placeholder -->
+<!-- This is where each page's content goes -->
 {% block content %}
 {% endblock %}
 
-<!-- Bootstrap JavaScript -->
+<!-- Bootstrap's own script, needed for things like the burger menu to work -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
-<!-- Connects to the main JavaScript file "script.js" -->
+<!-- Loads the site's own script, used across every page -->
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
