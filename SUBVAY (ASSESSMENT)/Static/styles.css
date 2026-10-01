@@ -1,4 +1,4 @@
-@import url('https://googleapis.com');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Rubik+Dirt&family=Work+Sans:wght@400;600;700&family=Fredoka:wght@400;500&display=swap');
 
 /* --- GLOBAL STYLES --- */
 * {
@@ -1255,3 +1255,134 @@ p a:hover {
     font-weight: 600;
     margin-bottom: 20px;
 }
+
+.sotd-divider {
+    border: none;
+    border-top: 1px solid #444;
+    margin: 20px 0;
+}
+
+.sotd-add-to-cart-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #ff2b2b;
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    border-radius: 30px;
+    padding: 14px;
+    text-decoration: none;
+    margin-bottom: 15px;
+    transition: 0.2s;
+}
+
+.sotd-add-to-cart-btn:hover {
+    background: #d92424;
+}
+
+.checkout-original-price-strike {
+    color: #888;
+    font-size: 13px;
+    text-decoration: line-through;
+    margin-right: 6px;
+}
+
+/* --- OFFERS PAGE --- */
+
+.offers-page-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 15px 60px;
+}
+
+/* Centred yellow heading */
+.offers-title {
+    color: #ffc107;
+    font-size: 36px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.offers-divider {
+    border: none;
+    border-top: 4px solid #222;
+    margin: 15px 0 25px 0;
+}
+
+/* Sub of the Day image on the left, social card on the right */
+.offers-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    align-items: stretch;
+}
+
+/* The link just wraps the image, so remove default link styling */
+.sotd-card-link {
+    display: block;
+    text-decoration: none;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sotd-card-link:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* The image fills the card, keeping its proportions */
+.sotd-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Social media card */
+.social-card {
+    background: rgba(40, 40, 40, 0.85);
+    border-radius: 14px;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.social-title {
+    color: #ff2b2b;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.instagram-icon {
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px auto;
+    transition: transform 0.2s ease;
+}
+
+.instagram-icon:hover {
+    transform: scale(1.05);
+}
+
+.social-text {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+/* Stacks the two cards on phones */
+@media (max-width: 800px) {
+    .offers-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

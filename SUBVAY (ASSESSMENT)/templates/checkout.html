@@ -41,7 +41,12 @@
                 <div class="checkout-order-item">
                     <div class="checkout-order-item-header">
                         <strong>{{ item.name }}</strong>
-                        <span class="checkout-order-item-price">${{ "%.2f"|format(item.price) }}</span>
+                        <span class="checkout-order-item-price">
+                            {% if item.is_sotd %}
+                            <span class="checkout-original-price-strike">${{ "%.2f"|format(item.original_price) }}</span>
+                            {% endif %}
+                            ${{ "%.2f"|format(item.price) }}
+                        </span>
                     </div>
                     <p class="checkout-order-item-description">{{ item.description }}</p>
 
@@ -50,6 +55,8 @@
                             <span>Qty:</span>
                             {% if item.is_premade %}
                             <form action="/cart/update-quantity/{{ item.id }}" method="POST" class="qty-form" data-price="{{ item.price }}">
+                            {% elif item.is_sotd %}
+                            <form action="/cart/update-sotd-quantity/{{ item.id }}" method="POST" class="qty-form" data-price="{{ item.price }}">
                             {% else %}
                             <form action="/cart/update-custom-quantity/{{ item.cart_index }}" method="POST" class="qty-form" data-price="{{ item.price }}">
                             {% endif %}
@@ -64,6 +71,8 @@
 
                         {% if item.is_premade %}
                         <a href="{{ url_for('delete_premade_item', item_id=item.id) }}" class="remove-link">Remove from cart</a>
+                        {% elif item.is_sotd %}
+                        <a href="{{ url_for('delete_sotd_item', item_id=item.id) }}" class="remove-link">Remove from cart</a>
                         {% else %}
                         <a href="{{ url_for('delete_custom_item', index=item.cart_index) }}" class="remove-link">Remove from cart</a>
                         {% endif %}

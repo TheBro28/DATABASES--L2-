@@ -6,33 +6,15 @@
     <hr class="offers-divider">
 
     <div class="offers-grid">
-        <!-- Sub of the Day card - clicking anywhere on it opens the full offer page -->
+        <!-- Sub of the Day image/link -->
         <a href="{{ url_for('sotd') }}" class="sotd-card-link">
-            <div class="sotd-card">
-                <h3 class="sotd-title">Sub <span class="sotd-title-small">of</span> the Day</h3>
-                <p class="sotd-price">$7.50</p>
-                <p class="sotd-subtitle">Subvay Seven Inch Sub</p>
-
-                <img src="{{ url_for('static', filename='SoTD.png') }}" alt="Sub of the Day" class="sotd-image">
-
-                <div class="sotd-days">
-                    <span>Mon</span>
-                    <span>Tue</span>
-                    <span>Wed</span>
-                    <span>Thu</span>
-                    <span>Fri</span>
-                    <span>Sat</span>
-                    <span>Sun</span>
-                </div>
-
-                <p class="sotd-footer-text"><span class="sotd-footer-red">New Line Up</span> <span class="sotd-footer-yellow">7 days, 7 flavours</span></p>
-            </div>
+            <img src="{{ url_for('static', filename='SoTD.png') }}" alt="Sub of the Day" class="sotd-image">
         </a>
 
         <!-- Social media card -->
         <div class="social-card">
             <h3 class="social-title">Follow us on:</h3>
-            <a href="https://www.instagram.com" target="_blank" rel="noopener">
+            <a href="https://www.instagram.com/subvaysandwiches/" target="_blank" rel="noopener">
                 <img src="{{ url_for('static', filename='instagram.png') }}" alt="Instagram" class="instagram-icon">
             </a>
             <p class="social-text">To see our latest offers, follow our Instagram</p>

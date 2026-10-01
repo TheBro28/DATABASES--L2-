@@ -92,16 +92,14 @@ def home():
 def offers():
     return render_template("offers.html")
 
-# Sub of the Day page shows sandwich matching day of the week based on ID (Monday = 1, Sunday = 7)
-@app.route('/sotd')
-def sotd():
-    # returns ID of the day of the week (1-7) based on the current date
+# Looks up today's offer row and sandwich details - shared by the sotd page and the add-to-cart route
+def get_todays_offer():
+    # isoweekday() returns 1 for Monday through 7 for Sunday, matching Offer ID 1-7
     today_number = datetime.now().isoweekday()
 
-    # Joins the day's offer to its sandwich so the name, ingredients, image, and both prices are all available
     offer = query_db(
         """
-        SELECT PRE_SANDWICH.name, PRE_SANDWICH.ingredients, PRE_SANDWICH.image_url,
+        SELECT PRE_SANDWICH.ID, PRE_SANDWICH.name, PRE_SANDWICH.ingredients, PRE_SANDWICH.image_url,
                PRE_SANDWICH.price, OFFERS.discounted_price
         FROM OFFERS
         LEFT JOIN PRE_SANDWICH ON OFFERS.pre_sandwich_ID = PRE_SANDWICH.ID
@@ -109,12 +107,53 @@ def sotd():
         """,
         (today_number,), one=True
     )
+    return offer, today_number
+
+# Sub of the Day page - shows whichever OFFERS row matches today's day of the week
+@app.route('/sotd')
+def sotd():
+    offer, today_number = get_todays_offer()
 
     # Works out today's name to show on the page
     day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     today_name = day_names[today_number - 1]
 
     return render_template("sotd.html", offer=offer, today_name=today_name)
+
+# Adds today's Sub of the Day to the cart at its discounted price (discounted price only on the sotd page, not the menu page)
+@app.route('/sotd/add-to-cart')
+def add_sotd_to_cart():
+    offer, today_number = get_todays_offer()
+
+    if not offer:
+        flash("No offer is available today.")
+        return redirect(url_for('sotd'))
+
+    sandwich_id, name, ingredients, image_url, normal_price, discount_amount = offer
+    # discounted_price is the amount taken OFF the normal price
+    sale_price = normal_price - discount_amount
+    item_id_str = str(sandwich_id)
+
+    # Creates an empty Sub of the Day cart in the session if one doesn't exist yet
+    if 'sotd_cart' not in session:
+        session['sotd_cart'] = {}
+
+    cart = session['sotd_cart']
+    current = cart.get(item_id_str, {'quantity': 0, 'unit_price': sale_price})
+
+    # Stops the quantity going past the 99 cap
+    if current['quantity'] >= 99:
+        flash(f'Maximum number of {name} in cart', 'error')
+        return redirect(url_for('sotd'))
+
+    # Increases the quantity and refreshes the stored sale price, in case the offer price has changed
+    current['quantity'] += 1
+    current['unit_price'] = sale_price
+    cart[item_id_str] = current
+    session['sotd_cart'] = cart
+
+    flash(f'{name} (Sub of the Day) added to your order!')
+    return redirect(url_for('sotd'))
 
 # History Page
 @app.route('/history')
@@ -370,7 +409,7 @@ def add_custom_to_session():
 
 # --- CHECKOUT PAGE --- #
 
-# Builds the full list of cart items (pre-made and custom) with prices, ready for the checkout page
+# Builds the full list of cart items (pre-made, custom, and Sub of the Day) with prices, ready for the checkout page
 @app.route('/checkout')
 def checkout():
     checkout_items = []
@@ -390,8 +429,32 @@ def checkout():
                 'name': name,
                 'description': ingredients,
                 'is_premade': True,
+                'is_sotd': False,
                 'quantity': quantity,
                 'price': price,
+                'subtotal': subtotal
+            })
+
+    # Adds every Sub of the Day item at the discounted price, working out its subtotal and adding it to the grand total
+    sotd_cart = session.get('sotd_cart', {})
+    for item_id_str, data in sotd_cart.items():
+        quantity = data['quantity']
+        unit_price = data['unit_price']
+
+        sandwich = query_db("SELECT name, ingredients, price FROM PRE_SANDWICH WHERE ID = ?", (int(item_id_str),), one=True)
+        if sandwich:
+            name, ingredients, normal_price = sandwich
+            subtotal = unit_price * quantity
+            grand_total += subtotal
+            checkout_items.append({
+                'id': item_id_str,
+                'name': f'{name} (Sub of the Day)',
+                'description': ingredients,
+                'is_premade': False,
+                'is_sotd': True,
+                'original_price': normal_price,
+                'quantity': quantity,
+                'price': unit_price,
                 'subtotal': subtotal
             })
 
@@ -435,6 +498,7 @@ def checkout():
             'name': 'Custom Sandwich',
             'description': description,
             'is_premade': False,
+            'is_sotd': False,
             'quantity': qty,
             'price': single_unit_price,
             'subtotal': subtotal
@@ -667,6 +731,28 @@ def update_cart_quantity(item_id):
         
     return redirect(url_for('checkout'))
 
+# Updates the number of a Sub of the Day item in the cart or deletes it if set to 0, keeping its discounted price
+@app.post('/cart/update-sotd-quantity/<string:item_id>')
+def update_sotd_quantity(item_id):
+    # Reads the number typed or set via the +/- buttons
+    quantity = request.form.get('quantity', type=int)
+
+    # Keeps the quantity within the 1-99 range the input allows
+    if quantity is not None:
+        quantity = max(1, min(quantity, 99))
+
+    if 'sotd_cart' in session:
+        cart = session['sotd_cart']
+        if item_id in cart:
+            # If the quantity is 1 or more, update the cart, otherwise remove the item
+            if quantity and quantity > 0:
+                cart[item_id]['quantity'] = quantity
+            else:
+                cart.pop(item_id, None)
+            session['sotd_cart'] = cart
+
+    return redirect(url_for('checkout'))
+
 # Updates the number of a custom sub in the cart or deletes it if set to 0
 @app.post('/cart/update-custom-quantity/<int:index>')
 def update_custom_quantity(index):
@@ -701,6 +787,17 @@ def delete_premade_item(item_id):
         
     return redirect(url_for('checkout'))
 
+# Deletes a Sub of the Day item from the cart
+@app.route('/cart/delete-sotd/<string:item_id>')
+def delete_sotd_item(item_id):
+    if 'sotd_cart' in session:
+        cart = session['sotd_cart']
+        cart.pop(item_id, None)
+        session['sotd_cart'] = cart
+        flash("Sub of the Day item removed.")
+
+    return redirect(url_for('checkout'))
+
 # Deletes a custom sandwich from the cart
 @app.route('/cart/delete-custom/<int:index>')
 def delete_custom_item(index):
@@ -726,10 +823,11 @@ def purchase_thanks():
         return redirect(url_for('signin'))
 
     premade_cart = session.get('premade_cart', {})
+    sotd_cart = session.get('sotd_cart', {})
     custom_cart = session.get('custom_cart', [])
 
     # Make sure the cart isn't empty
-    if not premade_cart and not custom_cart:
+    if not premade_cart and not sotd_cart and not custom_cart:
         flash("Your cart is empty.")
         return redirect(url_for('menu'))
 
@@ -750,6 +848,10 @@ def purchase_thanks():
             price_row = query_db("SELECT price FROM PRE_SANDWICH WHERE ID = ?", (int(item_id_str),), one=True)
             if price_row:
                 grand_total += price_row[0] * quantity
+
+        # Sub of the Day items use their stored discounted unit price, not the sandwich's normal price
+        for item_id_str, data in sotd_cart.items():
+            grand_total += data['unit_price'] * data['quantity']
 
         for custom in custom_cart:
             single_unit_price = calculate_custom_sandwich_price(custom)
@@ -779,6 +881,19 @@ def purchase_thanks():
                     """,
                     (new_order_id, pre_id, quantity, actual_price * quantity)
                 )
+
+        # Insert each Sub of the Day sandwich into the ORDER_ITEMS table using its discounted unit price
+        for item_id_str, data in sotd_cart.items():
+            pre_id = int(item_id_str)
+            quantity = data['quantity']
+            unit_price = data['unit_price']
+            db.execute(
+                """
+                INSERT INTO ORDER_ITEMS (order_ID, pre_sandwich_ID, cus_sandwich_ID, quantity, final_price)
+                VALUES (?, ?, NULL, ?, ?)
+                """,
+                (new_order_id, pre_id, quantity, unit_price * quantity)
+            )
 
         # Insert each custom sandwich into the ORDER_ITEMS table with its sauces and toppings
         for custom in custom_cart:
@@ -821,6 +936,7 @@ def purchase_thanks():
 
         # Clear the session carts after a successful order
         session.pop('premade_cart', None)
+        session.pop('sotd_cart', None)
         session.pop('custom_cart', None)
         # Clears the store/time choices too, so the next order starts fresh
         session.pop('selected_store_id', None)

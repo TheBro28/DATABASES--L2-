@@ -4,21 +4,25 @@
 <div class="sotd-page-wrapper">
 
     {% if offer %}
-    {% set sale_price = offer[3] - offer[4] %}
+    {% set sale_price = offer[4] - offer[5] %}
     <div class="sotd-detail-card">
         <h2 class="sotd-detail-day">{{ today_name }}'s Sub of the Day</h2>
+        <hr class="sotd-divider">
 
-        <img src="{{ offer[2] }}" alt="{{ offer[0] }}" class="sotd-detail-image">
+        <img src="{{ offer[3] }}" alt="{{ offer[1] }}" class="sotd-detail-image">
+        <hr class="sotd-divider">
 
-        <h1 class="sotd-detail-name">{{ offer[0] }}</h1>
-        <p class="sotd-detail-ingredients">{{ offer[1] }}</p>
+        <h1 class="sotd-detail-name">{{ offer[1] }}</h1>
+        <p class="sotd-detail-ingredients">{{ offer[2] }}</p>
 
         <div class="sotd-detail-pricing">
-            <span class="sotd-detail-original-price">${{ "%.2f"|format(offer[3]) }}</span>
+            <span class="sotd-detail-original-price">${{ "%.2f"|format(offer[4]) }}</span>
             <span class="sotd-detail-discount-price">${{ "%.2f"|format(sale_price) }}</span>
         </div>
 
-        <p class="sotd-detail-savings">You save ${{ "%.2f"|format(offer[4]) }}</p>
+        <p class="sotd-detail-savings">You save ${{ "%.2f"|format(offer[5]) }}</p>
+
+        <a href="{{ url_for('add_sotd_to_cart') }}" class="sotd-add-to-cart-btn">Add to Cart</a>
 
         <a href="{{ url_for('offers') }}" class="sotd-detail-back">&larr; Back to Offers</a>
     </div>
