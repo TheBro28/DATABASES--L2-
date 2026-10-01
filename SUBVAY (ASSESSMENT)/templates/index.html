@@ -1,41 +1,24 @@
 {% extends "layout.html" %}
 
-{% block title %}Home - Subway Test{% endblock %}
+{% block title %}Home - Subvay{% endblock %}
 
 {% block content %}
-<body>
-<div class="container mt-5">
-    <div class="alert alert-success text-center shadow-sm" role="alert">
-        <h4 class="alert-heading fw-bold">Flask is Working!</h4>
-        <p class="mb-0">If you can see this box and the navigation bar above, your template engine is rendering perfectly.</p>
-    </div>
+<!-- Banner sits directly under the navbar and spans the full width. All its text is part of the image. -->
+<div class="home-banner">
+    <img src="{{ url_for('static', filename='banner.png') }}" alt="Subvay - Best Sandwiches" class="home-banner-img">
+</div>
 
-    <!-- Test Feature Cards -->
-    <div class="row mt-4 g-4">
-        <div class="col-md-6">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold text-success">Layout Check</h5>
-                    <p class="card-text text-muted">Your Bootstrap framework is loaded correctly. This card should be sitting neatly inside the page grid system beneath your navbar.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-6">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold text-primary">Session & Auth Check</h5>
-                    <p class="card-text text-muted">
-                        {% if session.get('user') %}
-                            You are currently logged in as: <strong class="text-dark">{{ session['user'] }}</strong>
-                        {% else %}
-                            You are browsing as a guest. Click <strong>Sign In</strong> in the navbar to test your login form panel.
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
-        </div>
+<div class="home-content">
+    <!-- Sub of the Day image links straight to the Sub of the Day page -->
+    <a href="{{ url_for('sotd') }}" class="home-sotd-link">
+        <img src="{{ url_for('static', filename='SoTD.png') }}" alt="Sub of the Day" class="home-sotd-image">
+    </a>
+
+    <!-- About text card -->
+    <div class="home-about-card">
+        <p class="home-about-text">
+            Beyond the classic sub, we're committed to making every visit a great experience. Whether you're grabbing a quick lunch on the go or sitting down for a fresh salad or wrap, we focus on sustainable sourcing and supporting our local community. Join us so we can craft your next favourite meal together and share our passion for fresh, wholesome food with every guest who walks through our doors. We believe that a great sandwich is about more than just the toppings; it's about the care that goes into every slice and the connection we build with our neighbours. By choosing us, you're not just getting a meal—you're joining a movement that celebrates better ingredients and healthier everyday choices.
+        </p>
     </div>
 </div>
-</body>
 {% endblock %}

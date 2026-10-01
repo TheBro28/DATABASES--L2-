@@ -460,6 +460,8 @@ def checkout():
 
     # Adds every custom sandwich in the cart, working out its subtotal and adding it to the grand total
     custom_cart = session.get('custom_cart', [])
+        # The pickup time the customer chose on the checkout page, e.g. "14:35"
+    pickup_time = session.get('pickup_time_value')
     for index, custom in enumerate(custom_cart):
         single_unit_price = calculate_custom_sandwich_price(custom)
         qty = custom.get('quantity', 1)
@@ -826,6 +828,9 @@ def purchase_thanks():
     sotd_cart = session.get('sotd_cart', {})
     custom_cart = session.get('custom_cart', [])
 
+    # The pickup time the customer chose on the checkout page, e.g. "14:35"
+    pickup_time = session.get('pickup_time_value')
+
     # Make sure the cart isn't empty
     if not premade_cart and not sotd_cart and not custom_cart:
         flash("Your cart is empty.")
@@ -861,10 +866,10 @@ def purchase_thanks():
         # Insert order information into the ORDERS table and get the new order ID
         cursor = db.execute(
             """
-            INSERT INTO ORDERS (customer_ID, order_ts, total_amount)
-            VALUES (?, datetime('now', 'localtime'), ?)
+            INSERT INTO ORDERS (customer_ID, order_ts, total_amount, pickup_time)
+            VALUES (?, datetime('now', 'localtime'), ?, ?)
             """,
-            (customer_id, grand_total)
+            (customer_id, grand_total, pickup_time)
         )
         new_order_id = cursor.lastrowid
 

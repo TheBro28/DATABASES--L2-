@@ -1386,3 +1386,83 @@ p a:hover {
     }
 }
 
+/* --- HOME PAGE --- */
+
+/* Banner directly under the navbar */
+   
+.home-banner {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    line-height: 0;
+}
+
+.home-banner-img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Prevents horizontal scrolling */
+body {
+    overflow-x: hidden;
+}
+
+/* Sub of the Day image on the left, about text on the right */
+.home-content {
+    width: 96%;
+    max-width: 2000px;
+    margin: 30px auto 60px auto;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1.9fr;
+    gap: 30px;
+    align-items: stretch;
+}
+
+.home-sotd-link {
+    display: block;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-sotd-link:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Sub of the Day image */
+.home-sotd-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.home-about-card {
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 8px;
+    padding: clamp(28px, 3vw, 60px);
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* About text on the right side of the home page */
+.home-about-text {
+    font-family: "Work Sans", sans-serif;
+    font-size: clamp(16px, 1.45vw, 26px);
+    font-weight: 600;
+    line-height: 1.6;
+    color: #fff;
+    text-align: left;
+    margin-bottom: 0;
+}
+
+/* Stacks the image above the text on phones */
+@media (max-width: 800px) {
+    .home-content {
+        grid-template-columns: 1fr;
+    }
+}
