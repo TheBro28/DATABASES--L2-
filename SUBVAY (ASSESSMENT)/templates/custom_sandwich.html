@@ -1,15 +1,17 @@
+<!-- This is the custom sandwich builder page -->
 {% extends "layout.html" %}
 
+<!-- This is the main section containing everything on the page -->
 {% block content %}
 <div class="detail-page-wrapper">
     <h2 class="menu-title">Build Your Own Sandwich</h2>
     <hr class="title-divider">
 
     <div class="builder-card">
-        <!-- FIXED: Form now natively POSTs to add the custom sandwich directly into the session list -->
+        <!-- Everything picked in this form gets sent straight to the cart when "Add to Cart" is clicked -->
         <form id="builder-form" action="{{ url_for('add_custom_to_session') }}" method="POST">
 
-            <!-- Bread choice as a dropdown - description/price shown below once one is picked -->
+            <!-- Choosing the bread - its description shows below once one is picked -->
             <div class="builder-section">
                 <h3>Bread</h3>
                 <select id="bread-select" name="bread" class="builder-select" onchange="handleBuilderChange('bread')" required>
@@ -19,6 +21,7 @@
                     {% endfor %}
                 </select>
 
+                <!-- Each bread's description, only the picked one is actually shown -->
                 <div class="builder-description-container">
                     {% for bread in breads %}
                     <div id="bread-desc-{{ bread[0] }}" class="bread-description-block description-block {% if selected_bread == bread[0] %}active-description{% endif %}">
@@ -28,7 +31,7 @@
                 </div>
             </div>
 
-            <!-- Cheese choice as a dropdown - description/price shown below once one is picked -->
+            <!-- Choosing the cheese - works the same way as the bread above -->
             <div class="builder-section">
                 <h3>Cheese</h3>
                 <select id="cheese-select" name="cheese" class="builder-select" onchange="handleBuilderChange('cheese')" required>
@@ -47,7 +50,7 @@
                 </div>
             </div>
 
-            <!-- Sauce choices, multiple allowed -->
+            <!-- Picking sauces - more than one can be picked -->
             <div class="builder-section">
                 <h3>Sauces</h3>
                 <div class="builder-options">
@@ -60,7 +63,7 @@
                 </div>
             </div>
 
-            <!-- Topping choices, multiple allowed -->
+            <!-- Picking toppings - more than one can be picked -->
             <div class="builder-section">
                 <h3>Toppings</h3>
                 <div class="builder-options">
@@ -73,24 +76,24 @@
                 </div>
             </div>
 
-            <!-- Running total, updated live as the user selection changes -->
+            <!-- The running total - updates live as the customer picks things -->
             <div class="builder-total">
                 Total: $<span id="builder-total-value">{{ "%.2f"|format(total_price) }}</span>
             </div>
 
-            <!-- Adds item to cart -->
+            <!-- Adds the finished sandwich to the cart -->
             <button type="submit" id="add-to-cart-btn" class="builder-add-to-cart-btn" disabled>Add to Cart</button>
 
         </form>
 
-        <!-- Clears the in-progress sandwich build from the session -->
+        <!-- Clears everything picked so far and starts again -->
         <form action="{{ url_for('cancel_custom_sandwich') }}" method="POST">
             <button type="submit" class="builder-cancel-btn">Start Over</button>
         </form>
     </div>
 </div>
 
-<!-- Bread/cheese/sauce/topping prices as JSON - read by script.js -->
+<!-- The prices for every bread, cheese, sauce, and topping - the script uses this to work out the total -->
 <script type="application/json" id="bread-prices-data">{{ bread_prices | tojson }}</script>
 <script type="application/json" id="cheese-prices-data">{{ cheese_prices | tojson }}</script>
 <script type="application/json" id="sauce-prices-data">{{ sauce_prices | tojson }}</script>
