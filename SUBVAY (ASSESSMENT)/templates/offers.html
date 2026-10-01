@@ -1,22 +1,27 @@
+<!-- This template creates the "Offers Page" after the user navigates to it -->
 {% extends "layout.html" %}
 
+<!-- This is the main section containing everything on the page -->
 {% block content %}
 <div class="offers-page-wrapper">
+    <!-- Displays the main heading at the top of the page -->
     <h2 class="offers-title">Current Offers</h2>
     <hr class="offers-divider">
 
     <div class="offers-grid">
-        <!-- Sub of the Day image/link -->
+        <!-- A clickable image link that takes the customer to the "Sub of the Day" page -->
         <a href="{{ url_for('sotd') }}" class="sotd-card-link">
             <img src="{{ url_for('static', filename='SoTD.png') }}" alt="Sub of the Day" class="sotd-image">
         </a>
 
-        <!-- Social media card -->
+        <!-- A box section that holds the social media links -->
         <div class="social-card">
             <h3 class="social-title">Follow us on:</h3>
+            <!-- A clickable Instagram logo that opens our Instagram page in a new window -->
             <a href="https://www.instagram.com/subvaysandwiches/" target="_blank" rel="noopener">
                 <img src="{{ url_for('static', filename='instagram.png') }}" alt="Instagram" class="instagram-icon">
             </a>
+            <!-- Explanation instagram link -->
             <p class="social-text">To see our latest offers, follow our Instagram</p>
         </div>
     </div>
