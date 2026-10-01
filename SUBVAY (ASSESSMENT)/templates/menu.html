@@ -1,28 +1,33 @@
+<!-- This template creates the main menu page showing all available sandwiches -->
 {% extends "layout.html" %}
 
+<!-- This is the main section containing everything on the page -->
 {% block content %}
 <br>
+<!-- Displays the main heading at the top of the menu -->
 <h2 class="menu-title">Sandwiches You May Like</h2>
 
 <hr class="title-divider">
 
 <div class="sandwich-list three-column">
 
+    <!-- This checks if there are any sandwiches available in the database -->
     {% if all_sandwiches %}
+        <!-- This loops through every single sandwich to display them one by one -->
         {% for sandwich in all_sandwiches %}
 
-        <!-- Index 0: ID --->
+        <!-- A clickable link that takes the customer to the specific details page for this sandwich -->
         <a href="{{ url_for('sandwich', id=sandwich[0]) }}">
             <div class="sandwich-card">
+                <!-- Displays the picture of the sandwich -->
                 <div class="sandwich-card-image-box">
-                    <!-- Index 3: image_url -->
                     <img src="{{ sandwich[3] }}" alt="{{ sandwich[1] }}">
                 </div>
                 <div class="sandwich-card-info-box">
-                    <!-- Index 1: name -->
+                    <!-- Displays the name of the sandwich -->
                     <h2>{{ sandwich[1] }}</h2>
 
-                    <!-- Index 4: price -->
+                    <!-- Displays the price of the sandwich -->
                     <p class="price-text">${{ "%.2f"|format(sandwich[4]) }}</p>
                 </div>
             </div>
@@ -31,14 +36,17 @@
         {% endfor %}
     {% endif %}
 
-    <!-- Custom sandwich builder card -->
+    <!-- A clickable link that lets customers open the custom sandwich builder page -->
     <a href="{{ url_for('custom_sandwich') }}">
         <div class="sandwich-card">
+            <!-- Displays a large plus icon instead of a sandwich photo -->
             <div class="sandwich-card-image-box">
                 <span class="material-icons custom-sandwich-icon">add_circle</span>
             </div>
             <div class="sandwich-card-info-box">
+                <!-- Tells the customer they can design their own sandwich -->
                 <h2>Make Your Own</h2>
+                <!-- Shows the base starting price for a custom sandwich -->
                 <p class="price-text">${{ "%.2f"|format(custom_starting_price) }}</p>
             </div>
         </div>
@@ -46,6 +54,7 @@
 
 </div>
 
+<!-- If there are no sandwiches in the database, show this message instead -->
 {% if not all_sandwiches %}
     <p>The menu is currently empty.</p>
 {% endif %}
