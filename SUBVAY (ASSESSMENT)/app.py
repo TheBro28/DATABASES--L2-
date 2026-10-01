@@ -861,6 +861,9 @@ def purchase_thanks():
             qty = custom.get('quantity', 1)
             grand_total += single_unit_price * qty
 
+        # Rounds to 2 decimal places so small decimal errors (e.g. 12.989999999) never reach the database
+        grand_total = round(grand_total, 2)
+
         # Insert order information into the ORDERS table and get the new order ID
         cursor = db.execute(
             """
@@ -883,7 +886,7 @@ def purchase_thanks():
                     INSERT INTO ORDER_ITEMS (order_ID, pre_sandwich_ID, cus_sandwich_ID, quantity, final_price)
                     VALUES (?, ?, NULL, ?, ?)
                     """,
-                    (new_order_id, pre_id, quantity, actual_price * quantity)
+                    (new_order_id, pre_id, quantity, round(actual_price * quantity, 2))
                 )
 
         # Insert each Sub of the Day sandwich into the ORDER_ITEMS table using its discounted unit price
@@ -896,14 +899,14 @@ def purchase_thanks():
                 INSERT INTO ORDER_ITEMS (order_ID, pre_sandwich_ID, cus_sandwich_ID, quantity, final_price)
                 VALUES (?, ?, NULL, ?, ?)
                 """,
-                (new_order_id, pre_id, quantity, unit_price * quantity)
+                (new_order_id, pre_id, quantity, round(unit_price * quantity, 2))
             )
 
         # Insert each custom sandwich into the ORDER_ITEMS table with its sauces and toppings
         for custom in custom_cart:
             qty = custom.get('quantity', 1)
             single_unit_price = calculate_custom_sandwich_price(custom)
-            total_custom_price = single_unit_price * qty
+            total_custom_price = round(single_unit_price * qty, 2)
            
             # Insert the custom sandwich into the CUS_SANDWICH table and get its new ID
             cus_cursor = db.execute(
