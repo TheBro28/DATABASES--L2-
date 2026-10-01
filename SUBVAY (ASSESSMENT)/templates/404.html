@@ -1,17 +1,23 @@
+<!-- This template creates the error page that shows up when a web address cannot be found -->
 {% extends "layout.html" %}
 
+<!-- Sets the text that shows up on the browser tab for this page -->
 {% block title %} Page Not Found {% endblock %}
 
+<!-- This is the main section containing everything on the page -->
 {% block content %}
 <div class="login-page-wrapper error-page-wrapper">
     <div class="container">
         <div class="form-box active error-card">
+            <!-- Displays the main "Page Not Found" heading inside the error box -->
             <h2 class="error-title">Page Not Found</h2>
             
+            <!-- Explains to the visitor why they are seeing this error message -->
             <p class="error-text">
                 The page or web address you are looking for could not be found. This might be because the URL was mistyped, the link is broken, or the page has been moved to a new location.
             </p>
             
+            <!-- A clickable link button that takes the user back to the home page -->
             <a href="{{ url_for('home') }}" class="error-btn-link">
                 <button type="button" class="error-home-btn">Return To Home</button>
             </a>
