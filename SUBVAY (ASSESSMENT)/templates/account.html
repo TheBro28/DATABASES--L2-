@@ -1,30 +1,35 @@
+<!-- This template creates the customer's account page -->
 {% extends "layout.html" %}
 
+<!-- This is the main section containing everything on the page -->
 {% block content %}
 <div class="login-page-wrapper">
 
     <div class="container form-box active" id="account-box">
-        <!-- Top section showing the customer's name and email -->
+        <!-- Displays the customer's first and last name at the top -->
         <h2>{{ customer[1] }} {{ customer[2] }}</h2>
+        <!-- Displays the customer's email address centered below their name -->
         <p style="text-align: center; margin-bottom: 20px;">{{ customer[4] }}</p>
 
-        <!-- Seperator line -->
+        <!-- A horizontal line to separate sections -->
         <hr>
 
-        <!-- Customer's stored details pulled from the database -->
+        <!-- Displays the customer's phone number -->
         <p><strong style="color: #dc3545;">Phone Number:</strong> {{ customer[3] }}</p>
+        <!-- Displays the customer's gender -->
         <p><strong style="color: #dc3545;">Gender:</strong> {{ customer[6] }}</p>
+        <!-- Displays the customer's preferred store -->
         <p><strong style="color: #dc3545;">Preferred Store:</strong> {{ customer[5] }}</p>
 
-        <!-- Seperator line -->
+        <!-- A horizontal line to separate sections -->
         <hr>
 
-        <!-- Re-opens the thank you page showing the customer's most recent order -->
+        <!-- A button that takes the customer to a summary page of their most recent order -->
         <form action="{{ url_for('last_order') }}" method="GET">
             <button type="submit" class="account-last-order-btn">View Last Order</button>
         </form>
 
-        <!-- Sends the user to the logout route, ending their session -->
+        <!-- A red button that signs the customer out of their account and ends their session -->
         <form action="{{ url_for('logout') }}" method="GET">
             <button type="submit" style="background: #dc3545;">Log Out</button>
         </form>
