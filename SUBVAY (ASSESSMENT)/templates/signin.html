@@ -1,60 +1,63 @@
 {% extends "layout.html" %}
 
+<!-- This is the main section containing everything on the page -->
 {% block content %}
-<!-- Main Page Wrapper -->
+<!-- Everything on this page -->
 <div class="login-page-wrapper">
 
     <!-- =========================================================
-         1. LOGIN BOX CONTAINER
+         1. LOGIN BOX
          ========================================================= -->
 
+    <!-- Shows by default unless the register box should show instead -->
     <div class="container form-box {% if not show_register %}active{% endif %}" id="login-form">
-        <!-- Sends login credentials -->
+        <!-- Sends the typed email and password to the server when submitted -->
         <form action="{{ url_for('handle_login_data') }}" method="POST">
             <h2>Login</h2>
             
-            <!-- Conditional warning alert block for failed database password verification matches -->
+            <!-- Shows a red error message if the login attempt failed -->
             {% if warning %}
                 <p style="color: #dc3545; font-weight: 500; text-align: center; margin-bottom: 15px;">Invalid email or password.</p>
             {% endif %}
 
-            <!-- User Login Authorisation Inputs -->
+            <!-- Where the customer types their email and password -->
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
             
-            <!-- Login Submission Button -->
+            <!-- The login button -->
             <button type="submit" name="login">Login</button>
             
-            <!-- Switch to register form -->
+            <!-- Clicking this swaps over to the register box instead -->
             <p>Don't have an account? <a href="#" onclick="showForm('register-form')">Register</a></p>
         </form>
     </div>
 
     <!-- =========================================================
-         2. REGISTER BOX CONTAINER
+         2. REGISTER BOX
          ========================================================= -->
 
+    <!-- Hidden unless the customer clicked "Register" or a signup error happened -->
     <div class="container form-box {% if show_register %}active{% endif %}" id="register-form">
-        <!-- Registration form endpoint -->
+        <!-- Sends the new account details to the server when submitted -->
         <form action="{{ url_for('handle_register_data') }}" method="POST">
             <h2>Register</h2>
             
-            <!-- Conditional warning alert block for failed registration (password mismatch / duplicate email) -->
+            <!-- Shows a red error message if something went wrong signing up -->
             {% if register_warning %}
                 <p style="color: #dc3545; font-weight: 500; text-align: center; margin-bottom: 15px;">{{ register_warning }}</p>
             {% endif %}
             
-            <!-- Imputs for customer registration information -->
+            <!-- The new customer's basic details -->
             <input type="text" name="firstname" placeholder="First name" required>
             <input type="text" name="lastname" placeholder="Last name" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="text" name="phonenumber" placeholder="Phone number" required>
             
-            <!-- Password Security -->
+            <!-- The password, typed twice to make sure it's correct -->
             <input type="password" name="password" placeholder="Password" required>
             <input type="password" name="conpassword" placeholder="Confirm password" required>
             
-            <!-- Prefered Store Dropdown -->
+            <!-- Picks which store they usually collect from -->
             <select name="prefstore" required>
                 <option value="">--Select Preferred Store--</option>
                 <option value="176 Williams Street, Store 1">176 Williams Street, Store 1</option>
@@ -84,7 +87,7 @@
                 <option value="174a Mawhera Quay, Store 25">174a Mawhera Quay, Store 25</option>
             </select>
             
-            <!-- Gender Selection Dropdown Menu -->
+            <!-- Picks their gender -->
             <select name="gender" required>
                 <option value="">--Select Gender--</option>
                 <option value="Male">Male</option>
@@ -92,16 +95,16 @@
                 <option value="Other">Other</option>
             </select>
             
-            <!-- Registration Submission Button -->
+            <!-- The register button -->
             <button type="submit" name="Register">Register</button>
             
-            <!-- Switch to Log in form -->
+            <!-- Clicking this swaps back to the login box -->
             <p>Already have an account? <a href="#" onclick="showForm('login-form')">Login</a></p>
         </form>
     </div>
 
 </div>
 
-<!-- Connects to javascript that shows and hides form boxes -->
+<!-- Loads the script that makes the login/register boxes switch -->
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 {% endblock %}
