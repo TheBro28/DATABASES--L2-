@@ -88,6 +88,42 @@ body {
     order: -1;
 }
 
+/* --- NAVBAR BURGER MENU --- */
+
+/* Burger button styling */
+.site-navbar .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.5);
+    padding: 6px 10px;
+}
+
+.site-navbar .navbar-toggler:focus {
+    box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.5);
+}
+
+/* Stacked, centred links once the navbar has collapsed into the burger menu */
+@media (max-width: 991.98px) {
+    .site-navbar .navbar-nav {
+        padding-top: 15px;
+        gap: 6px;
+    }
+
+    .site-navbar .nav-item {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .site-navbar .nav-link {
+        padding: 10px 0;
+    }
+}
+
+/* Keeps the burger button centred in the navbar */
+@media (max-width: 991.98px) {
+    .site-navbar .container-fluid {
+        justify-content: center;
+    }
+}
+
 /* --- LOGIN & REGISTER PAGE CENTERING --- */
 .login-page-wrapper {
     display: flex;

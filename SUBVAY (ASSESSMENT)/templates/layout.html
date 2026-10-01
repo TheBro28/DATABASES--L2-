@@ -17,46 +17,56 @@
 
 <!-- Navigation bar block -->
 {% block nav %}
-<nav class="navbar site-navbar">
+<nav class="navbar navbar-expand-lg site-navbar" data-bs-theme="dark">
     <div class="container-fluid">
-        <!-- links -->
-        <ul class="navbar-nav d-flex flex-row justify-content-evenly align-items-center mb-0 w-100">
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/menu">Menu</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('offers') }}">Offers</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('history') }}">History</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link navbar-checkout-btn" href="{{ url_for('checkout') }}">
-                    <span class="material-icons">shopping_cart</span>
-                    Checkout
-                </a>
-            </li>
-            
-            <!-- Dynamic Sign In -->
-            {% if session.user and user_name %}
-            <li class="nav-item">
-                <a class="nav-link navbar-signin-link" href="{{ url_for('account_details') }}">
-                    <span class="material-icons">person</span>
-                    {{ user_name }}
-                </a>
-            </li>
-            {% else %}
-            <li class="nav-item">
-                <a class="nav-link navbar-signin-link" href="/signin">
-                    <span class="material-icons">person</span>
-                    Sign In
-                </a>
-            </li>
-            {% endif %}
-        </ul>
+
+        <!-- Burger button - only visible on smaller screens -->
+        <button class="navbar-toggler mx-auto" type="button"
+                data-bs-toggle="collapse" data-bs-target="#mainNavLinks"
+                aria-controls="mainNavLinks" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Links collapse into the burger menu on smaller screens -->
+        <div class="collapse navbar-collapse" id="mainNavLinks">
+            <ul class="navbar-nav justify-content-evenly align-items-center mb-0 w-100">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/menu">Menu</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('offers') }}">Offers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('history') }}">History</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link navbar-checkout-btn" href="{{ url_for('checkout') }}">
+                        <span class="material-icons">shopping_cart</span>
+                        Checkout
+                    </a>
+                </li>
+
+                <!-- Dynamic Sign In -->
+                {% if session.user and user_name %}
+                <li class="nav-item">
+                    <a class="nav-link navbar-signin-link" href="{{ url_for('account_details') }}">
+                        <span class="material-icons">person</span>
+                        {{ user_name }}
+                    </a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link navbar-signin-link" href="/signin">
+                        <span class="material-icons">person</span>
+                        Sign In
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
 </nav>
 {% endblock %}
