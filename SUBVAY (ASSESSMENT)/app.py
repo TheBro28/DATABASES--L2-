@@ -92,6 +92,11 @@ def home():
 def offers():
     return render_template("offers.html")
 
+# Sub of the Day page - opens when the offer image on the Offers page is clicked
+@app.route('/sotd')
+def sotd():
+    return render_template("sotd.html")
+
 # History Page
 @app.route('/history')
 def history():
