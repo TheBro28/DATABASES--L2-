@@ -19,6 +19,11 @@
         <!-- Seperator line -->
         <hr>
 
+        <!-- Re-opens the thank you page showing the customer's most recent order -->
+        <form action="{{ url_for('last_order') }}" method="GET">
+            <button type="submit" class="account-last-order-btn">View Last Order</button>
+        </form>
+
         <!-- Sends the user to the logout route, ending their session -->
         <form action="{{ url_for('logout') }}" method="GET">
             <button type="submit" style="background: #dc3545;">Log Out</button>

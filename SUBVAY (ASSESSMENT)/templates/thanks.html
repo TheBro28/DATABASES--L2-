@@ -23,6 +23,15 @@
                 Order confirmed! Your meal is being processed for pickup at <strong>{{ store_name }}</strong>. Your order number is <strong>#{{ order_id }}</strong>, please have it ready when you arrive.
             </p>
 
+            <!-- Order details - pickup time and total, saved with the order -->
+            {% if pickup_display or total_amount %}
+            <p class="thanks-message">
+                {% if pickup_display %}Pickup time: <strong>{{ pickup_display }}</strong>{% endif %}
+                {% if pickup_display and total_amount %}&nbsp;|&nbsp;{% endif %}
+                {% if total_amount %}Total: <strong>${{ '%.2f' % total_amount }}</strong>{% endif %}
+            </p>
+            {% endif %}
+
             <!-- Closing message -->
             <p class="thanks-small">
                 We appreciate your business and hope to see you again soon!<br>Thanks again from The Subvay Team

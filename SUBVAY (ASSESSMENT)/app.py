@@ -697,6 +697,55 @@ def account_details():
     customer_info = query_db(query, (email,), one=True)
     return render_template("account.html", customer=customer_info)
 
+# Turns 24 hour time into 12 hour time for display on the thank you page
+def format_pickup_time(pickup_time):
+    if not pickup_time:
+        return None
+    try:
+        return datetime.strptime(pickup_time, '%H:%M').strftime('%I:%M%p').lstrip('0').lower()
+    except ValueError:
+        # Falls back to showing the raw saved value if it isn't in the expected format
+        return pickup_time
+
+# Looks up the logged-in customer's most recent order (the highest ORDERS.ID belonging to them)
+def get_last_order(email):
+    return query_db(
+        """
+        SELECT ORDERS.ID, ORDERS.total_amount, ORDERS.pickup_time, STORES.name
+        FROM ORDERS
+        JOIN CUSTOMER ON ORDERS.customer_ID = CUSTOMER.ID
+        LEFT JOIN STORES ON CUSTOMER.pref_store = STORES.ID
+        WHERE CUSTOMER.email = ?
+        ORDER BY ORDERS.ID DESC
+        LIMIT 1
+        """,
+        (email,), one=True
+    )
+
+# Re-shows the thank you page for the customer's last saved order (linked from the account page)
+@app.route('/account/last-order')
+def last_order():
+    # Only available if the user is logged in
+    if 'user' not in session:
+        return redirect('/signin')
+
+    order = get_last_order(session['user'])
+
+    # Lets the customer know if they haven't ordered anything yet
+    if not order:
+        flash("You haven't placed an order yet.")
+        return redirect(url_for('account_details'))
+
+    order_id, total_amount, pickup_time, store_name = order
+
+    return render_template(
+        "thanks.html",
+        store_name=store_name if store_name else "your preferred store",
+        order_id=order_id,
+        pickup_display=format_pickup_time(pickup_time),
+        total_amount=total_amount
+    )
+
 # Logs the user out and sends them back to the home page
 @app.route('/logout')
 def logout():
@@ -964,7 +1013,13 @@ def purchase_thanks():
         return "An internal error occurred saving your transaction.", 500
 
     # Show the confirmation page with the store the order will be picked up from
-    return render_template("thanks.html", store_name=store_name, order_id=new_order_id)
+    return render_template(
+        "thanks.html",
+        store_name=store_name,
+        order_id=new_order_id,
+        pickup_display=format_pickup_time(pickup_time),
+        total_amount=grand_total
+    )
 
 # Starts up the website server
 if __name__ == "__main__":

@@ -283,6 +283,16 @@ p a:hover {
     margin: 20px 0;
 }
 
+/* View Last Order button on account page */
+.form-box .account-last-order-btn {
+    background: #ffc107;
+    color: #000;
+}
+
+.form-box .account-last-order-btn:hover {
+    background: #e6ac00;
+}
+
 /* --- MENU LAYOUT & GRID SYSTEM --- */
 .three-column {
     display: grid;
