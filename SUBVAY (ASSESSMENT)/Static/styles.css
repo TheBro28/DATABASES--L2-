@@ -1175,3 +1175,83 @@ p a:hover {
     font-size: 14px;
     font-weight: 700;
 }
+
+/* --- SUB OF THE DAY DETAIL PAGE --- */
+.sotd-page-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 15px;
+}
+
+.sotd-detail-card {
+    background: #1a1a1a;
+    border-radius: 14px;
+    padding: 35px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.sotd-detail-day {
+    color: #ffc107;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.sotd-detail-image {
+    width: 100%;
+    max-width: 450px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.sotd-detail-name {
+    font-family: "Rubik Dirt", cursive;
+    color: #ff2b2b;
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.sotd-detail-ingredients {
+    color: #ccc;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+.sotd-detail-pricing {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.sotd-detail-original-price {
+    color: #888;
+    font-size: 20px;
+    text-decoration: line-through;
+}
+
+.sotd-detail-discount-price {
+    color: #ffc107;
+    font-size: 34px;
+    font-weight: 800;
+}
+
+.sotd-detail-back {
+    color: #fff;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.sotd-detail-back:hover {
+    color: #ffc107;
+    text-decoration: underline;
+}
+
+.sotd-detail-savings {
+    color: #ff4d4d;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}

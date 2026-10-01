@@ -92,10 +92,29 @@ def home():
 def offers():
     return render_template("offers.html")
 
-# Sub of the Day page - opens when the offer image on the Offers page is clicked
+# Sub of the Day page shows sandwich matching day of the week based on ID (Monday = 1, Sunday = 7)
 @app.route('/sotd')
 def sotd():
-    return render_template("sotd.html")
+    # returns ID of the day of the week (1-7) based on the current date
+    today_number = datetime.now().isoweekday()
+
+    # Joins the day's offer to its sandwich so the name, ingredients, image, and both prices are all available
+    offer = query_db(
+        """
+        SELECT PRE_SANDWICH.name, PRE_SANDWICH.ingredients, PRE_SANDWICH.image_url,
+               PRE_SANDWICH.price, OFFERS.discounted_price
+        FROM OFFERS
+        LEFT JOIN PRE_SANDWICH ON OFFERS.pre_sandwich_ID = PRE_SANDWICH.ID
+        WHERE OFFERS.ID = ?
+        """,
+        (today_number,), one=True
+    )
+
+    # Works out today's name to show on the page
+    day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    today_name = day_names[today_number - 1]
+
+    return render_template("sotd.html", offer=offer, today_name=today_name)
 
 # History Page
 @app.route('/history')

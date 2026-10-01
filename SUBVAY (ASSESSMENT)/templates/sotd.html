@@ -1,9 +1,30 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="detail-page-wrapper">
-    <h2 class="menu-title">Sub of the Day</h2>
-    <hr class="title-divider">
-    <p>More details coming soon.</p>
+<div class="sotd-page-wrapper">
+
+    {% if offer %}
+    {% set sale_price = offer[3] - offer[4] %}
+    <div class="sotd-detail-card">
+        <h2 class="sotd-detail-day">{{ today_name }}'s Sub of the Day</h2>
+
+        <img src="{{ offer[2] }}" alt="{{ offer[0] }}" class="sotd-detail-image">
+
+        <h1 class="sotd-detail-name">{{ offer[0] }}</h1>
+        <p class="sotd-detail-ingredients">{{ offer[1] }}</p>
+
+        <div class="sotd-detail-pricing">
+            <span class="sotd-detail-original-price">${{ "%.2f"|format(offer[3]) }}</span>
+            <span class="sotd-detail-discount-price">${{ "%.2f"|format(sale_price) }}</span>
+        </div>
+
+        <p class="sotd-detail-savings">You save ${{ "%.2f"|format(offer[4]) }}</p>
+
+        <a href="{{ url_for('offers') }}" class="sotd-detail-back">&larr; Back to Offers</a>
+    </div>
+    {% else %}
+    <p>No offer is set up for today yet.</p>
+    {% endif %}
+
 </div>
 {% endblock %}
