@@ -145,9 +145,9 @@ body {
     width: 100%;
     max-width: 450px;
     padding: 30px;
-    background: #fff;
+    background: #262626;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     display: none;
 }
 
@@ -162,38 +162,82 @@ h2 {
     margin-bottom: 10px;
 }
 
+/* Yellow Login / Register titles */
+.form-box h2 {
+    color: #ffc107;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Information fields */
 .form-box input,
 .form-box select {
     display: block;
     width: 100%;
     padding: 12px;
-    background: #eee;
+    background: #1a1a1a;
     border-radius: 6px;
-    border: none;
+    border: 1px solid #3a3a3a;
     outline: none;
     font-size: 16px;
-    color: #333;
+    color: #fff;
     margin-top: 0;
     margin-bottom: 10px !important;
 }
 
+/* Yellow outline when a field is clicked into */
+.form-box input:focus,
+.form-box select:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
+}
+
+/* Prompt Text */
+.form-box input::placeholder {
+    color: #b3b3b3;
+    opacity: 1;
+}
+
+/* Dropdowns show prompt text until an option is picked, then turn white */
+.form-box select:invalid {
+    color: #b3b3b3;
+}
+
+.form-box select:valid {
+    color: #fff;
+}
+
+/* Dropdown list dark with white text */
+.form-box select option {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+/* Autofill styling */
+.form-box input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #1a1a1a inset;
+    -webkit-text-fill-color: #fff;
+    caret-color: #fff;
+}
+
+/* Big red buttons with white text */
 .form-box button {
     display: block;
     width: 100%;
     padding: 12px;
-    background: #7494ec;
+    background: #dc3545;
     border-radius: 6px;
     border: none;
     cursor: pointer;
     font-size: 16px;
     color: #fff;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 10px !important;
     transition: 0.5s;
 }
 
 .form-box button:hover {
-    background: #6885d3;
+    background: #b02a37;
 }
 
 /* --- PARAGRAPH TEXT & NAVIGATION LINKS --- */
@@ -211,6 +255,32 @@ p a {
 
 p a:hover {
     text-decoration: underline;
+}
+
+/* Text under buttons */
+.form-box p {
+    color: #ccc;
+}
+
+/* Red Register / Login links */
+.form-box p a {
+    color: #ff2b2b;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.form-box p a:hover {
+    color: #ff4d4d;
+    text-decoration: underline;
+}
+
+/* Seperator lines */
+.form-box hr {
+    border: none;
+    border-top: 1px solid #666;
+    opacity: 1;
+    margin: 20px 0;
 }
 
 /* --- MENU LAYOUT & GRID SYSTEM --- */
@@ -1425,7 +1495,6 @@ p a:hover {
 /* --- HOME PAGE --- */
 
 /* Banner directly under the navbar */
-   
 .home-banner {
     width: 100vw;
     margin-left: calc(50% - 50vw);
