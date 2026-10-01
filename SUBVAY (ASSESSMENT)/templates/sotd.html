@@ -1,31 +1,48 @@
+<!-- This template creates the "Sub of the Day" special offer page -->
 {% extends "layout.html" %}
 
 {% block content %}
 <div class="sotd-page-wrapper">
 
+    <!-- This checks if there is a sub of the day set for today -->
     {% if offer %}
+    <!-- This does the math to figure out the discount price (Original Price minus Savings) -->
     {% set sale_price = offer[4] - offer[5] %}
+    
+    <!-- This creates the box card that holds the sub of the day details -->
     <div class="sotd-detail-card">
+        <!-- Shows the current day of the week, like "Monday's Sub of the Day" -->
         <h2 class="sotd-detail-day">{{ today_name }}'s Sub of the Day</h2>
         <hr class="sotd-divider">
 
+        <!-- Displays a picture of the featured sandwich -->
         <img src="{{ offer[3] }}" alt="{{ offer[1] }}" class="sotd-detail-image">
         <hr class="sotd-divider">
 
+        <!-- Displays the name of the sandwich -->
         <h1 class="sotd-detail-name">{{ offer[1] }}</h1>
+        <!-- Lists the ingredients that come on the sandwich -->
         <p class="sotd-detail-ingredients">{{ offer[2] }}</p>
 
+        <!-- This section displays the two different prices side-by-side -->
         <div class="sotd-detail-pricing">
+            <!-- Shows the original, regular price of the sandwich -->
             <span class="sotd-detail-original-price">${{ "%.2f"|format(offer[4]) }}</span>
+            <!-- Shows the lower, discounted sale price -->
             <span class="sotd-detail-discount-price">${{ "%.2f"|format(sale_price) }}</span>
         </div>
 
+        <!-- Tells the customer how much money they are saving -->
         <p class="sotd-detail-savings">You save ${{ "%.2f"|format(offer[5]) }}</p>
 
+        <!-- A clickable button that lets the customer add the sub to their cart -->
         <a href="{{ url_for('add_sotd_to_cart') }}" class="sotd-add-to-cart-btn">Add to Cart</a>
 
+        <!-- A text link with a left arrow that lets the customer go back to the offers page -->
         <a href="{{ url_for('offers') }}" class="sotd-detail-back">&larr; Back to Offers</a>
     </div>
+    
+    <!-- If there is no sub of the day, show this message instead -->
     {% else %}
     <p>No offer is set up for today yet.</p>
     {% endif %}
