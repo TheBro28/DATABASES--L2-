@@ -1,27 +1,29 @@
+<!-- This template creates the detail page for an individual sandwich -->
 {% extends "layout.html" %}
 
+<!-- This is the main section containing everything on the page -->
 {% block content %}
 <div class="sandwich-hero">
 
-    <!-- Sandwich image -->
+    <!-- This holds and displays the picture of the selected sandwich -->
     <div class="sandwich-hero-image-container">
         <img src="{{ sandwich[3] }}" alt="{{ sandwich[1] }}">
     </div>
 
     <div class="sandwich-hero-content">
-        <!--Back to menu button with left arrow-->
+        <!-- A text link with a left arrow that lets the customer go back to the menu -->
         <p class="sandwich-hero-back"><a href="{{ url_for('menu') }}">&larr; Back to Menu</a></p>
 
-        <!-- Index 1: Name -->
+        <!-- Displays the name of the sandwich -->
         <h1 class="sandwich-hero-name">{{ sandwich[1] }}</h1>
 
-        <!-- Index 4: Price formatted -->
+        <!-- Displays the price of the sandwich -->
         <p class="sandwich-hero-price">${{ "%.2f"|format(sandwich[4]) }}</p>
 
-        <!-- Index 2: Description -->
+        <!-- Displays the text description of the sandwich -->
         <p class="sandwich-hero-description">{{ sandwich[2] }}</p>
 
-        <!-- Triggers the premade session cart route, passing the sandwich ID directly -->
+        <!-- A clickable button with a right arrow that adds this specific sandwich to the shopping cart -->
         <a href="{{ url_for('add_premade_to_session', item_id=sandwich[0]) }}" class="sandwich-hero-btn">
             Add To Cart
             <span class="sandwich-hero-btn-icon">
