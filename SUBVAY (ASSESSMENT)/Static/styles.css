@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Rubik+Dirt&family=Work+Sans:wght@400;600;700&family=Fredoka:wght@400;500&display=swap');
 
-/* --- GLOBAL STYLES --- */
+/* --- EVERY ELEMENT ON THE SITE --- */
 * {
     margin: 0;
     padding: 0;
@@ -8,6 +8,7 @@
     font-family: "Poppins", sans-serif;
 }
 
+/* The page background used site-wide */
 body {
     min-height: 100vh;
     background-color: #c9d6ff;
@@ -20,28 +21,32 @@ body {
 }
 
 /* --- NAVIGATION BAR --- */
+
+/* The dark bar across the top of every page */
 .site-navbar {
     background: #141414 !important;
     padding: 18px 0;
 }
 
-/* Centers each nav item's content within its own list item  */
+/* Keeps each link centred within its own slot */
 .site-navbar .nav-item {
     display: flex;
     align-items: center;
 }
 
+/* The nav links' text */
 .site-navbar .nav-link {
     color: #fff !important;
     font-weight: 700;
     font-size: 16px;
 }
 
+/* Turns yellow when hovered */
 .site-navbar .nav-link:hover {
     color: #ffc107 !important;
 }
 
-/* Solid black button (Checkout) */
+/* The black "Checkout" button in the nav bar */
 .navbar-checkout-btn {
     background: #000 !important;
     border-radius: 0;
@@ -52,11 +57,12 @@ body {
     gap: 4px;
 }
 
+/* Makes the Checkout text red */
 .site-navbar .nav-link.navbar-checkout-btn {
     color: #ff2b2b !important;
 }
 
-/* Cart icon */
+/* The little cart icon inside the Checkout button */
 .navbar-checkout-btn .material-icons {
     font-size: 24px;
     line-height: 1;
@@ -68,7 +74,7 @@ body {
     order: -1;
 }
 
-/* Sign In link */
+/* The "Sign In" link, or the customer's name once logged in */
 .navbar-signin-link {
     display: inline-flex;
     align-items: center;
@@ -76,7 +82,7 @@ body {
     gap: 4px;
 }
 
-/* Person icon */
+/* The little person icon next to Sign In */
 .navbar-signin-link .material-icons {
     font-size: 24px;
     line-height: 1;
@@ -88,19 +94,20 @@ body {
     order: -1;
 }
 
-/* --- NAVBAR BURGER MENU --- */
+/* --- NAVBAR ON SMALL SCREENS (BURGER MENU) --- */
 
-/* Burger button styling */
+/* The burger button itself */
 .site-navbar .navbar-toggler {
     border-color: rgba(255, 255, 255, 0.5);
     padding: 6px 10px;
 }
 
+/* A yellow glow around the burger button when clicked */
 .site-navbar .navbar-toggler:focus {
     box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.5);
 }
 
-/* Stacked, centred links once the navbar has collapsed into the burger menu */
+/* Stacks the links one under another once the menu collapses on smaller screens */
 @media (max-width: 991.98px) {
     .site-navbar .navbar-nav {
         padding-top: 15px;
@@ -117,14 +124,16 @@ body {
     }
 }
 
-/* Keeps the burger button centred in the navbar */
+/* Keeps the burger button in the middle of the bar on small screens */
 @media (max-width: 991.98px) {
     .site-navbar .container-fluid {
         justify-content: center;
     }
 }
 
-/* --- LOGIN & REGISTER PAGE CENTERING --- */
+/* --- LOGIN & REGISTER PAGE LAYOUT --- */
+
+/* Centres the login/register box in the middle of the page */
 .login-page-wrapper {
     display: flex;
     justify-content: center;
@@ -140,7 +149,9 @@ body {
     justify-content: center;
 }
 
-/* --- FORM BOX VISIBILITY CONTROLS --- */
+/* --- SHOWING/HIDING THE LOGIN AND REGISTER BOXES --- */
+
+/* Hidden by default */
 .form-box {
     width: 100%;
     max-width: 450px;
@@ -151,25 +162,26 @@ body {
     display: none;
 }
 
+/* Shown when this box is the one currently picked */
 .form-box.active {
     display: block;
 }
 
-/* --- FORM ELEMENTS STYLING --- */
+/* --- FORM TEXT AND FIELDS --- */
 h2 {
     font-size: 34px;
     text-align: center;
     margin-bottom: 10px;
 }
 
-/* Yellow Login / Register titles */
+/* The yellow "Login" / "Register" titles */
 .form-box h2 {
     color: #ffc107;
     font-weight: 700;
     margin-bottom: 20px;
 }
 
-/* Information fields */
+/* The text boxes and dropdowns on these forms */
 .form-box input,
 .form-box select {
     display: block;
@@ -185,20 +197,20 @@ h2 {
     margin-bottom: 10px !important;
 }
 
-/* Yellow outline when a field is clicked into */
+/* A yellow glow around a field once it's clicked into */
 .form-box input:focus,
 .form-box select:focus {
     border-color: #ffc107;
     box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
 }
 
-/* Prompt Text */
+/* The grey hint text shown before anything is typed */
 .form-box input::placeholder {
     color: #b3b3b3;
     opacity: 1;
 }
 
-/* Dropdowns show prompt text until an option is picked, then turn white */
+/* Dropdowns show grey text until something is picked, then turn white */
 .form-box select:invalid {
     color: #b3b3b3;
 }
@@ -207,20 +219,20 @@ h2 {
     color: #fff;
 }
 
-/* Dropdown list dark with white text */
+/* The dropdown list itself */
 .form-box select option {
     background: #1a1a1a;
     color: #fff;
 }
 
-/* Autofill styling */
+/* Stops the browser's autofill from turning fields white */
 .form-box input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px #1a1a1a inset;
     -webkit-text-fill-color: #fff;
     caret-color: #fff;
 }
 
-/* Big red buttons with white text */
+/* The big red Login/Register buttons */
 .form-box button {
     display: block;
     width: 100%;
@@ -240,7 +252,7 @@ h2 {
     background: #b02a37;
 }
 
-/* --- PARAGRAPH TEXT & NAVIGATION LINKS --- */
+/* --- GENERAL PARAGRAPH TEXT AND LINKS --- */
 p {
     font-size: 14.5px;
     text-align: center;
@@ -257,12 +269,12 @@ p a:hover {
     text-decoration: underline;
 }
 
-/* Text under buttons */
+/* The small text under the Login/Register buttons */
 .form-box p {
     color: #ccc;
 }
 
-/* Red Register / Login links */
+/* The red "Register" / "Login" switch links */
 .form-box p a {
     color: #ff2b2b;
     font-weight: 700;
@@ -275,7 +287,7 @@ p a:hover {
     text-decoration: underline;
 }
 
-/* Seperator lines */
+/* A thin grey line used to split up sections */
 .form-box hr {
     border: none;
     border-top: 1px solid #666;
@@ -283,7 +295,7 @@ p a:hover {
     margin: 20px 0;
 }
 
-/* View Last Order button on account page */
+/* The "View Last Order" button on the account page */
 .form-box .account-last-order-btn {
     background: #ffc107;
     color: #000;
@@ -293,25 +305,27 @@ p a:hover {
     background: #e6ac00;
 }
 
-/* --- MENU LAYOUT & GRID SYSTEM --- */
+/* --- MENU PAGE LAYOUT --- */
+
+/* Lays the sandwich cards out in 3 even columns */
 .three-column {
     display: grid;
-    /* minmax(0, 1fr) stops an oversized card from stretching its whole column */
+    /* Stops one oversized card from stretching its whole column */
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 2em;
     padding: 20px;
 }
 
-/* Removes default styles from links */
+/* Strips the blue underline off sandwich links */
 .sandwich-list a {
     text-decoration: none;
     color: inherit;
     display: block;
 }
 
-/* --- SANDWICH PRODUCT CARDS --- */
+/* --- SANDWICH CARDS ON THE MENU PAGE --- */
 
-/* Dark card slightly transparent */
+/* The dark card around each sandwich */
 .sandwich-card {
     background: rgba(0, 0, 0, 0.75);
     border-radius: 14px;
@@ -321,7 +335,7 @@ p a:hover {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Image container for each sandwich card */
+/* The grey box that holds each sandwich's photo */
 .sandwich-card-image-box {
     background: #3a3a3a;
     border-radius: 8px;
@@ -334,7 +348,7 @@ p a:hover {
     margin-bottom: 12px;
 }
 
-/* Image within the container */
+/* The photo itself, sized to fill the box */
 .sandwich-card-image-box img {
     height: 100%;
     width: auto;
@@ -342,7 +356,7 @@ p a:hover {
     display: block;
 }
 
-/* Info box for each sandwich card */
+/* The box underneath holding the name and price */
 .sandwich-card-info-box {
     background: #3a3a3a;
     border-radius: 8px;
@@ -350,7 +364,7 @@ p a:hover {
     text-align: center;
 }
 
-/* Sandwich name */
+/* The sandwich's name */
 .sandwich-card-info-box h2 {
     font-size: 17px;
     font-weight: 700;
@@ -358,7 +372,7 @@ p a:hover {
     margin-bottom: 8px;
 }
 
-/* Price text */
+/* The price, shown in yellow */
 .sandwich-card-info-box .price-text {
     font-size: 22px;
     font-weight: 700;
@@ -366,14 +380,14 @@ p a:hover {
     margin-bottom: 0;
 }
 
-/* --- SINGLE SANDWICH VIEW --- */
+/* --- SINGLE SANDWICH PAGE --- */
 .detail-page-wrapper {
     padding: 40px 15px;
     max-width: 900px;
     margin: 0 auto;
 }
 
-/* sandwich hero section */
+/* The photo-and-details layout for one sandwich */
 .sandwich-hero {
     display: flex;
     align-items: center;
@@ -383,7 +397,7 @@ p a:hover {
     overflow-x: hidden;
 }
 
-/* Sandwich image container */
+/* The box the sandwich photo sits in */
 .sandwich-hero-image-container {
     position: relative;
     width: 38%;
@@ -391,7 +405,7 @@ p a:hover {
     flex-shrink: 0;
 }
 
-/* Sandwich image */
+/* The photo, stretched and positioned to fill its box */
 .sandwich-hero-image-container img {
     position: absolute;
     top: 0;
@@ -402,6 +416,7 @@ p a:hover {
     object-position: right center;
 }
 
+/* The text column next to the photo */
 .sandwich-hero-content {
     flex: 1;
     display: flex;
@@ -415,7 +430,7 @@ p a:hover {
     margin-bottom: 15px;
 }
 
-/* Back link styles */
+/* The "Back to Menu" link */
 .sandwich-hero-back a {
     color: #fff;
     font-family: "Work Sans", sans-serif;
@@ -424,13 +439,13 @@ p a:hover {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-/* Yellow hover on back link */
+/* Turns yellow when hovered */
 .sandwich-hero-back a:hover {
     color: #ffc107;
     text-decoration: underline;
 }
 
-/* Sandwich name */
+/* The big sandwich name */
 .sandwich-hero-name {
     font-family: "Rubik Dirt", cursive;
     font-size: clamp(36px, 7vw, 96px);
@@ -440,7 +455,7 @@ p a:hover {
     margin-bottom: 15px;
 }
 
-/* Price styles */
+/* The price */
 .sandwich-hero-price {
     font-family: "Work Sans", sans-serif;
     font-size: clamp(20px, 2.2vw, 34px);
@@ -451,7 +466,7 @@ p a:hover {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* Sandwich description */
+/* The sandwich's description text */
 .sandwich-hero-description {
     font-family: "Fredoka", sans-serif;
     font-size: clamp(15px, 1.6vw, 20px);
@@ -463,7 +478,7 @@ p a:hover {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-/* Add to Cart button */
+/* The outlined "Add to Cart" button */
 .sandwich-hero-btn {
     font-family: "Work Sans", sans-serif;
     font-weight: 600;
@@ -483,12 +498,12 @@ p a:hover {
     transition: 0.3s;
 }
 
-/* Hover effect for the Add to Cart button */
+/* Gets a faint red glow on hover */
 .sandwich-hero-btn:hover {
     background: rgba(255, 43, 43, 0.1);
 }
 
-/* Button icon */
+/* The little round arrow icon on the button */
 .sandwich-hero-btn-icon {
     background: #ff2b2b;
     color: #fff;
@@ -500,20 +515,20 @@ p a:hover {
     justify-content: center;
 }
 
-/* Material icon inside the arrow button */
 .sandwich-hero-btn-icon .material-icons {
     font-size: 20px;
 }
 
-/* --- MENU TITLE SEPARATION LINE --- */
+/* --- MENU PAGE TITLE --- */
 
-/* Red title text */
+/* The red "Sandwiches You May Like" heading */
 .menu-title {
     color: #ff2b2b;
     font-weight: 700;
     margin-bottom: 10px;
 }
 
+/* The red line under the heading */
 .title-divider {
     width: 90%;
     max-width: 1200px;
@@ -524,15 +539,17 @@ p a:hover {
     opacity: 0.8;
 }
 
-/* --- CUSTOM SANDWICH ICON --- */
+/* --- BUILD YOUR OWN SANDWICH ICON --- */
+
+/* The big red plus icon on the "Make Your Own" card */
 .custom-sandwich-icon {
     font-size: 120px !important;
     color: #ff2b2b !important;
 }
 
-/* --- CUSTOM SANDWICH BUILDER --- */
+/* --- SANDWICH BUILDER PAGE --- */
 
-/* Dark card to match high fidelity model */
+/* The dark card holding the whole sandwich builder */
 .builder-card {
     background: #262626;
     color: #f5f5f5;
@@ -542,17 +559,19 @@ p a:hover {
     margin-top: 20px;
 }
 
-/* Thin separation line between each field group */
+/* A thin line between each section (bread, cheese, sauces, toppings) */
 .builder-section {
     padding-bottom: 20px;
     margin-bottom: 20px;
     border-bottom: 1px solid #444;
 }
 
+/* No line after the very last section */
 .builder-section:last-of-type {
     border-bottom: none;
 }
 
+/* Each section's heading, like "Bread" or "Cheese" */
 .builder-section h3 {
     font-size: 20px;
     font-weight: 700;
@@ -561,7 +580,7 @@ p a:hover {
     margin-bottom: 12px;
 }
 
-/* Dropdown styling for the bread/cheese */
+/* The bread/cheese dropdown boxes */
 .builder-select {
     width: 100%;
     padding: 10px;
@@ -573,16 +592,17 @@ p a:hover {
     margin-bottom: 10px;
 }
 
-/* Only the description matching the currently selected dropdown value is shown */
+/* Descriptions are hidden by default */
 .description-block {
     display: none;
 }
 
+/* Shown once that option is the one picked */
 .description-block.active-description {
     display: block;
 }
 
-/* Preserves the paragraph breaks already in the bread/cheese description text */
+/* Keeps the line breaks already written into the bread/cheese descriptions */
 .builder-option-description {
     font-size: 13px;
     color: #b3b3b3;
@@ -590,13 +610,14 @@ p a:hover {
     margin-top: 4px;
 }
 
-
+/* Lays the sauce/topping choices out in 3 columns */
 .builder-options {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
 }
 
+/* Each individual sauce/topping choice */
 .builder-option {
     display: flex;
     align-items: center;
@@ -615,7 +636,7 @@ p a:hover {
     border-color: #7494ec;
 }
 
-/* Highlights the whole box blue once its checkbox is ticked */
+/* Turns blue once that sauce/topping is ticked */
 .builder-option:has(input:checked) {
     background: #7494ec;
     border-color: #7494ec;
@@ -626,6 +647,7 @@ p a:hover {
     margin-bottom: 0;
 }
 
+/* The running total price shown on the builder */
 .builder-total {
     font-size: 24px;
     font-weight: 700;
@@ -634,10 +656,12 @@ p a:hover {
     margin: 25px 0;
 }
 
+/* Rounds off every button on this page */
 .builder-card button {
     border-radius: 30px;
 }
 
+/* The red "Start Over" button */
 .builder-cancel-btn {
     background: #dc3545;
 }
@@ -646,7 +670,7 @@ p a:hover {
     background: #b02a37;
 }
 
-/* "Add to Cart" placeholder button - disabled until a bread and cheese are both chosen */
+/* The green "Add to Cart" button - greyed out until bread and cheese are both picked */
 .builder-add-to-cart-btn {
     width: 100%;
     padding: 12px;
@@ -671,9 +695,9 @@ p a:hover {
     cursor: not-allowed;
 }
 
-/* --- FEEDBACK ALERTS --- */
+/* --- POP-UP MESSAGES --- */
 
-/* Container positioned at the top center of the screen */
+/* Keeps the pop-up messages centred at the top of the screen */
 .flash-messages-container {
     position: fixed;
     top: 20px;
@@ -684,7 +708,7 @@ p a:hover {
     max-width: 500px;
 }
 
-/* The actual alert box - Now split into two - one for success and one for danger, with different colors */
+/* The shared look of every pop-up message box */
 .flash-message {
     padding: 15px 20px;
     border-radius: 6px;
@@ -697,19 +721,21 @@ p a:hover {
     animation: slideDown 0.3s ease-out;
 }
 
+/* A green success message, like "Added to cart" */
 .flash-message.alert-success {
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
 }
 
+/* A red error message, like a cart limit being hit */
 .flash-message.alert-danger {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
 
-/* Close button on the right side */
+/* The little x button to close a pop-up message */
 .close-flash-btn {
     background: none;
     border: none;
@@ -725,6 +751,8 @@ p a:hover {
 }
 
 /* --- ANIMATIONS --- */
+
+/* Makes pop-up messages slide down into view instead of just appearing */
 @keyframes slideDown {
     from {
         transform: translateY(-20px);
@@ -738,7 +766,7 @@ p a:hover {
 
 /* --- THANK YOU PAGE --- */
 
-/* Card container for the thank you message */
+/* The dark card holding the thank you message */
 .thanks-container,
 .thanks-card {
     width: 90%;
@@ -751,7 +779,7 @@ p a:hover {
     text-align: center;
 }
 
-/* Green tick inside a circle */
+/* The green tick icon */
 .thanks-icon {
     width: 86px;
     height: 86px;
@@ -759,7 +787,7 @@ p a:hover {
     margin: 0 auto 20px auto;
 }
 
-/* Main heading */
+/* The main "Thank You" heading */
 .thanks-container h2,
 .thanks-card h2 {
     font-size: 28px;
@@ -767,7 +795,7 @@ p a:hover {
     margin-bottom: 10px;
 }
 
-/* Pickup message */
+/* The message telling the customer when/where to pick up their order */
 .thanks-message {
     max-width: 560px;
     margin: 0 auto 26px auto;
@@ -776,7 +804,7 @@ p a:hover {
     color: #eee;
 }
 
-/* Smaller closing message */
+/* A smaller closing note */
 .thanks-small {
     font-size: 12px;
     line-height: 1.2;
@@ -784,6 +812,7 @@ p a:hover {
     margin-bottom: 30px !important;
 }
 
+/* The red button back to the menu */
 .thanks-red-menu-btn {
     margin-bottom: 0 !important;
     width: 100% !important;
@@ -804,13 +833,13 @@ p a:hover {
     transform: translateY(-1px);
 }
 
-/* --- 404 ERROR PAGE CUSTOMIZATIONS --- */
+/* --- PAGE NOT FOUND (404) --- */
 
 .error-page-wrapper {
     padding: 40px 0;
 }
 
-/* 404 Card */
+/* The dark card holding the error message */
 .error-card {
     background: #262626 !important;
     color: #f5f5f5 !important;
@@ -822,7 +851,7 @@ p a:hover {
     text-align: center;
 }
 
-/* 404 Title */
+/* The big "404" title */
 .error-title {
     color: #ff4d4d !important;
     margin-bottom: 35px !important;
@@ -833,7 +862,7 @@ p a:hover {
     text-align: center;
 }
 
-/* 404 Text */
+/* The explanation text */
 .error-text {
     color: #b3b3b3 !important;
     font-size: 18px !important;
@@ -845,7 +874,7 @@ p a:hover {
     margin-right: auto;
 }
 
-/* 404 Button Link */
+/* Wraps the "Back to Home" button */
 .error-btn-link {
     text-decoration: none;
     display: block;
@@ -853,7 +882,7 @@ p a:hover {
     margin: 0 auto;
 }
 
-/* 404 Home Button */
+/* The red "Back to Home" button */
 .error-home-btn {
     margin-bottom: 0 !important;
     width: 100% !important;
@@ -869,7 +898,6 @@ p a:hover {
     letter-spacing: 0.5px;
 }
 
-/* 404 Home Button Hover */
 .error-home-btn:hover {
     background: #b02a37 !important;
 }
@@ -883,7 +911,7 @@ p a:hover {
     padding: 20px 15px 60px;
 }
 
-/* Yellow page heading */
+/* The yellow page heading */
 .history-title {
     color: #ffc107;
     text-align: center;
@@ -892,14 +920,14 @@ p a:hover {
     margin-bottom: 12px;
 }
 
-/* Light grey line under the heading */
+/* The light grey line under the heading */
 .history-divider {
     border: none;
     border-top: 1px solid #666;
     margin: 0 0 25px 0;
 }
 
-/* Dark card that holds all of the history content */
+/* The dark card holding all the history writing and photos */
 .history-card {
     background: #262626;
     color: #e0e0e0;
@@ -907,7 +935,7 @@ p a:hover {
     padding: 35px 40px;
 }
 
-/* Yellow sub-headings for each section */
+/* The yellow sub-headings for each section */
 .history-section-title {
     color: #ffc107;
     font-size: 19px;
@@ -915,7 +943,7 @@ p a:hover {
     margin-bottom: 10px;
 }
 
-/* Paragraph text inside the card */
+/* The paragraph writing inside the card */
 .history-card p {
     font-size: 14px;
     line-height: 1.6;
@@ -924,7 +952,7 @@ p a:hover {
     margin-bottom: 16px;
 }
 
-/* Full width photo */
+/* A photo that takes up the full width */
 .history-image-full {
     width: 100%;
     height: auto;
@@ -933,26 +961,26 @@ p a:hover {
     display: block;
 }
 
-/* Thin line separating each section */
+/* A thin line separating each section */
 .history-section-divider {
     border: none;
     border-top: 1px solid #444;
     margin: 25px 0;
 }
 
-/* Two-column row */
+/* A row with text on one side and a photo on the other */
 .history-row {
     display: flex;
     align-items: center;
     gap: 25px;
 }
 
-/* Text side of a two-column row */
+/* The text side of that row */
 .history-row-text {
     flex: 1;
 }
 
-/* Photo side of a two-column row */
+/* The photo side of that row */
 .history-image-half {
     width: 260px;
     max-width: 40%;
@@ -961,7 +989,7 @@ p a:hover {
     flex-shrink: 0;
 }
 
-/* Small trademark footnote */
+/* A small italic trademark note */
 .history-footnote {
     font-size: 11px;
     font-style: italic;
@@ -969,7 +997,7 @@ p a:hover {
     margin: 20px 0 0 0;
 }
 
-/* Makes this section stack vertically on mobile phones */
+/* Stacks the text and photo on top of each other on phone screens */
 @media (max-width: 600px) {
     .history-row {
         flex-direction: column;
@@ -979,14 +1007,17 @@ p a:hover {
         max-width: 100%;
     }
 }
-/* needs comments */
+
 /* --- CHECKOUT PAGE --- */
+
+/* Keeps the whole checkout page centred and a sensible width */
 .checkout-page-wrapper {
     max-width: 1100px;
     margin: 0 auto;
     padding: 40px 15px;
 }
 
+/* The big yellow "Basket" heading */
 .checkout-heading {
     color: #ffc107;
     font-size: 42px;
@@ -994,12 +1025,14 @@ p a:hover {
     text-align: left;
 }
 
+/* The line under the heading */
 .checkout-heading-divider {
     border: none;
     border-top: 1px solid #555;
     margin: 15px 0 25px 0;
 }
 
+/* The bar showing the pickup store and time */
 .checkout-info-bar {
     background: #262626;
     color: #f5f5f5;
@@ -1017,6 +1050,7 @@ p a:hover {
     display: inline-block;
 }
 
+/* The dropdown for picking which store to collect from */
 .store-select {
     background: #333;
     color: #fff;
@@ -1064,12 +1098,14 @@ p a:hover {
     cursor: pointer;
 }
 
+/* Splits the checkout page into the main order on the left, cart summary on the right */
 .checkout-main-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 25px;
 }
 
+/* The dark card style shared by "Your Order", "Your Cart", and "Hungry for more?" */
 .checkout-panel {
     background: #262626;
     color: #f5f5f5;
@@ -1078,6 +1114,7 @@ p a:hover {
     margin-bottom: 25px;
 }
 
+/* Each panel's red heading */
 .checkout-panel-title {
     color: #ff2b2b;
     font-size: 20px;
@@ -1085,17 +1122,20 @@ p a:hover {
     margin-bottom: 15px;
 }
 
+/* The row showing a cart item's name and price */
 .checkout-order-item-header {
     display: flex;
     justify-content: space-between;
     font-size: 17px;
 }
 
+/* The price, shown in yellow */
 .checkout-order-item-price {
     color: #ffc107;
     font-weight: 700;
 }
 
+/* The ingredients list under each item */
 .checkout-order-item-description {
     font-size: 13px;
     color: #b3b3b3;
@@ -1103,6 +1143,7 @@ p a:hover {
     text-align: left;
 }
 
+/* The row with the quantity controls, subtotal, and remove link */
 .checkout-order-item-footer {
     display: flex;
     flex-wrap: wrap;
@@ -1124,6 +1165,7 @@ p a:hover {
     gap: 6px;
 }
 
+/* The small + and - buttons */
 .qty-btn {
     width: 26px;
     height: 26px;
@@ -1139,6 +1181,7 @@ p a:hover {
     border-color: #7494ec;
 }
 
+/* The number box showing how many of that item are in the cart */
 .qty-input {
     width: 45px;
     text-align: center;
@@ -1149,11 +1192,13 @@ p a:hover {
     padding: 4px;
 }
 
+/* The "Subtotal: $X" text, only shown once more than 1 is picked */
 .checkout-order-item-subtotal {
     font-size: 13px;
     color: #ccc;
 }
 
+/* The bold red "Remove from cart" link */
 .remove-link {
     color: #ff4d4d;
     font-size: 13px;
@@ -1165,12 +1210,14 @@ p a:hover {
     text-decoration: underline;
 }
 
+/* The line between each item in the cart */
 .checkout-item-divider {
     border: none;
     border-top: 1px solid #444;
     margin: 18px 0;
 }
 
+/* The yellow "Add Items" button that goes back to the menu */
 .add-items-btn {
     display: block;
     text-align: center;
@@ -1187,6 +1234,7 @@ p a:hover {
     background: #e6ac00;
 }
 
+/* The row showing the overall cart total */
 .checkout-cart-total-row {
     display: flex;
     justify-content: space-between;
@@ -1194,6 +1242,7 @@ p a:hover {
     margin-bottom: 15px;
 }
 
+/* The big yellow "Purchase" button */
 .proceed-btn {
     display: block;
     width: 100%;
@@ -1213,12 +1262,14 @@ p a:hover {
     background: #e6ac00;
 }
 
+/* Greyed out when the cart is empty */
 .proceed-btn:disabled {
     background: #555;
     color: #999;
     cursor: not-allowed;
 }
 
+/* Each sandwich suggested in the "Hungry for more?" section */
 .hungry-item {
     display: flex;
     justify-content: space-between;
@@ -1228,6 +1279,7 @@ p a:hover {
     border-bottom: 1px solid #444;
 }
 
+/* No line after the very last suggestion */
 .hungry-item:last-child {
     border-bottom: none;
 }
@@ -1252,6 +1304,7 @@ p a:hover {
     font-size: 14px;
 }
 
+/* The small red "Add" button in the suggestions list */
 .hungry-add-btn {
     background: #ff2b2b;
     color: #fff;
@@ -1266,12 +1319,14 @@ p a:hover {
     background: #d92424;
 }
 
+/* The line under each panel's heading */
 .checkout-panel-divider {
     border: none;
     border-top: 1px solid #444;
     margin: 0 0 15px 0;
 }
 
+/* The clickable box showing the chosen pickup time */
 .checkout-time {
     display: flex;
     align-items: center;
@@ -1282,6 +1337,7 @@ p a:hover {
     display: inline-block;
 }
 
+/* The time picker box */
 .time-inline-input {
     background: #333;
     color: #fff;
@@ -1292,13 +1348,16 @@ p a:hover {
     font-weight: 700;
 }
 
-/* --- SUB OF THE DAY DETAIL PAGE --- */
+/* --- SUB OF THE DAY PAGE --- */
+
+/* Keeps the Sub of the Day card centred */
 .sotd-page-wrapper {
     max-width: 700px;
     margin: 0 auto;
     padding: 40px 15px;
 }
 
+/* The dark card showing today's sandwich */
 .sotd-detail-card {
     background: #1a1a1a;
     border-radius: 14px;
@@ -1307,6 +1366,7 @@ p a:hover {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
+/* The "Monday's Sub of the Day" heading */
 .sotd-detail-day {
     color: #ffc107;
     font-size: 18px;
@@ -1314,6 +1374,7 @@ p a:hover {
     margin-bottom: 20px;
 }
 
+/* The sandwich photo */
 .sotd-detail-image {
     width: 100%;
     max-width: 450px;
@@ -1321,6 +1382,7 @@ p a:hover {
     margin-bottom: 20px;
 }
 
+/* The sandwich's name */
 .sotd-detail-name {
     font-family: "Rubik Dirt", cursive;
     color: #ff2b2b;
@@ -1328,12 +1390,14 @@ p a:hover {
     margin-bottom: 15px;
 }
 
+/* The ingredients list */
 .sotd-detail-ingredients {
     color: #ccc;
     font-size: 14px;
     margin-bottom: 25px;
 }
 
+/* The row showing both prices side by side */
 .sotd-detail-pricing {
     display: flex;
     justify-content: center;
@@ -1342,18 +1406,21 @@ p a:hover {
     margin-bottom: 25px;
 }
 
+/* The normal price, crossed out */
 .sotd-detail-original-price {
     color: #888;
     font-size: 20px;
     text-decoration: line-through;
 }
 
+/* The big discounted price */
 .sotd-detail-discount-price {
     color: #ffc107;
     font-size: 34px;
     font-weight: 800;
 }
 
+/* The link back to the Offers page */
 .sotd-detail-back {
     color: #fff;
     font-size: 14px;
@@ -1365,6 +1432,7 @@ p a:hover {
     text-decoration: underline;
 }
 
+/* The "You save $X" note */
 .sotd-detail-savings {
     color: #ff4d4d;
     font-size: 13px;
@@ -1372,12 +1440,14 @@ p a:hover {
     margin-bottom: 20px;
 }
 
+/* A thin line, used to split up this page */
 .sotd-divider {
     border: none;
     border-top: 1px solid #444;
     margin: 20px 0;
 }
 
+/* The red "Add to Cart" button */
 .sotd-add-to-cart-btn {
     display: block;
     width: 100%;
@@ -1397,6 +1467,7 @@ p a:hover {
     background: #d92424;
 }
 
+/* The crossed-out normal price shown on the checkout page next to a Sub of the Day item */
 .checkout-original-price-strike {
     color: #888;
     font-size: 13px;
@@ -1406,13 +1477,14 @@ p a:hover {
 
 /* --- OFFERS PAGE --- */
 
+/* Keeps the offers content centred and a sensible width */
 .offers-page-wrapper {
     max-width: 1100px;
     margin: 0 auto;
     padding: 40px 15px 60px;
 }
 
-/* Centred yellow heading */
+/* The centred yellow "Current Offers" heading */
 .offers-title {
     color: #ffc107;
     font-size: 36px;
@@ -1426,7 +1498,7 @@ p a:hover {
     margin: 15px 0 25px 0;
 }
 
-/* Sub of the Day image on the left, social card on the right */
+/* The Sub of the Day photo on the left, the social media card on the right */
 .offers-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -1434,7 +1506,7 @@ p a:hover {
     align-items: stretch;
 }
 
-/* The link just wraps the image, so remove default link styling */
+/* The clickable link wrapping the Sub of the Day photo */
 .sotd-card-link {
     display: block;
     text-decoration: none;
@@ -1443,12 +1515,13 @@ p a:hover {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Lifts up slightly on hover */
 .sotd-card-link:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 }
 
-/* The image fills the card, keeping its proportions */
+/* The photo itself, filling its space without stretching oddly */
 .sotd-image {
     display: block;
     width: 100%;
@@ -1456,7 +1529,7 @@ p a:hover {
     object-fit: cover;
 }
 
-/* Social media card */
+/* The "Follow us on Instagram" card */
 .social-card {
     background: rgba(40, 40, 40, 0.85);
     border-radius: 14px;
@@ -1475,6 +1548,7 @@ p a:hover {
     margin-bottom: 20px;
 }
 
+/* The Instagram logo */
 .instagram-icon {
     width: 100%;
     max-width: 240px;
@@ -1484,6 +1558,7 @@ p a:hover {
     transition: transform 0.2s ease;
 }
 
+/* Grows slightly on hover */
 .instagram-icon:hover {
     transform: scale(1.05);
 }
@@ -1495,7 +1570,7 @@ p a:hover {
     margin-bottom: 0;
 }
 
-/* Stacks the two cards on phones */
+/* Stacks the two cards on top of each other on phones */
 @media (max-width: 800px) {
     .offers-grid {
         grid-template-columns: 1fr;
@@ -1504,7 +1579,7 @@ p a:hover {
 
 /* --- HOME PAGE --- */
 
-/* Banner directly under the navbar */
+/* The banner image stretching the full width of the screen, right under the nav bar */
 .home-banner {
     width: 100vw;
     margin-left: calc(50% - 50vw);
@@ -1517,12 +1592,12 @@ p a:hover {
     height: auto;
 }
 
-/* Prevents horizontal scrolling */
+/* Stops the banner from causing a sideways scrollbar */
 body {
     overflow-x: hidden;
 }
 
-/* Sub of the Day image on the left, about text on the right */
+/* The Sub of the Day photo on the left, the "about us" text on the right */
 .home-content {
     width: 96%;
     max-width: 2000px;
@@ -1534,6 +1609,7 @@ body {
     align-items: stretch;
 }
 
+/* The clickable link wrapping the home page's Sub of the Day image */
 .home-sotd-link {
     display: block;
     border-radius: 8px;
@@ -1542,12 +1618,13 @@ body {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Lifts up slightly on hover */
 .home-sotd-link:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 }
 
-/* Sub of the Day image */
+/* The sotd image */
 .home-sotd-image {
     display: block;
     width: 100%;
@@ -1555,6 +1632,7 @@ body {
     object-fit: cover;
 }
 
+/* The dark "about us" card */
 .home-about-card {
     background: rgba(0, 0, 0, 0.75);
     border-radius: 8px;
@@ -1564,7 +1642,7 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* About text on the right side of the home page */
+/* The "about us" writing */
 .home-about-text {
     font-family: "Work Sans", sans-serif;
     font-size: clamp(16px, 1.45vw, 26px);
@@ -1575,7 +1653,7 @@ body {
     margin-bottom: 0;
 }
 
-/* Stacks the image above the text on phones */
+/* Stacks the photo above the text on phones */
 @media (max-width: 800px) {
     .home-content {
         grid-template-columns: 1fr;
