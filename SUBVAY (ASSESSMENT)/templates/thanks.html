@@ -1,43 +1,46 @@
-<!-- Shared layout -->
+<!-- This template creates the "Thank You" page shown after a customer orders food -->
 {% extends "layout.html" %}
 
 {% block title %}Order Complete{% endblock %}
 
-<!-- Thank you page content -->
+<!-- This is the main section containing everything on the page -->
 {% block content %}
 <div class="login-page-wrapper thanks-page-wrapper">
     <div class="container">
-        <!-- Confirmation card -->
+        <!-- This creates the white box card that holds the receipt information -->
         <div class="thanks-card">
-            <!-- Success icon -->
+            <!-- This draws the green checkmark icon at the top -->
             <svg class="thanks-icon" viewBox="0 0 100 100" xmlns="http://w3.org" aria-hidden="true">
                 <circle cx="50" cy="50" r="45" fill="none" stroke="#00b83f" stroke-width="8"/>
                 <path d="M28 52 L44 68 L73 36" fill="none" stroke="#00b83f" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
 
-            <!-- Heading -->
+            <!-- Big heading to show the purchase -->
             <h2>Thank you for your purchase!</h2>
 
-            <!-- Pickup message - shows the customer's order number (ORDERS.ID) -->
+            <!-- This text tells the customer which shop to go to and shows their unique order number -->
             <p class="thanks-message">
                 Order confirmed! Your meal is being processed for pickup at <strong>{{ store_name }}</strong>. Your order number is <strong>#{{ order_id }}</strong>, please have it ready when you arrive.
             </p>
 
-            <!-- Order details - pickup time and total, saved with the order -->
+            <!-- This section only shows up if there is a pickup time or a final price to display -->
             {% if pickup_display or total_amount %}
             <p class="thanks-message">
+                <!-- Shows the scheduled pickup time -->
                 {% if pickup_display %}Pickup time: <strong>{{ pickup_display }}</strong>{% endif %}
+                <!-- Puts a divider line between the time and the price if both are there -->
                 {% if pickup_display and total_amount %}&nbsp;|&nbsp;{% endif %}
+                <!-- Shows the final dollar amount charged -->
                 {% if total_amount %}Total: <strong>${{ '%.2f' % total_amount }}</strong>{% endif %}
             </p>
             {% endif %}
 
-            <!-- Closing message -->
+            <!-- Note from business -->
             <p class="thanks-small">
                 We appreciate your business and hope to see you again soon!<br>Thanks again from The Subvay Team
             </p>
 
-            <!-- Back to menu button -->
+            <!-- This creates a clickable red button that sends the customer back to the main food menu -->
             <a href="{{ url_for('menu') }}" class="thanks-link">
                 <button type="button" class="thanks-red-menu-btn">Back To Menu</button>
             </a>
