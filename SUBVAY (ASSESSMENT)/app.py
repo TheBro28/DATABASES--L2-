@@ -820,7 +820,7 @@ def update_custom_quantity(index):
         cart = session['custom_cart']
         # Makes sure this item actually exists before changing it
         if 0 <= index < len(cart):
-            # Updates the quantity, or removes the item if it's been set to 0
+            # Updates the quantity
             if quantity and quantity > 0:
                 cart[index]['quantity'] = quantity
             else:
