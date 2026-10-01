@@ -1,16 +1,16 @@
-// Switches visibility between different forms on the screen
+// Switches between showing the login box or the register box
 function showForm(formId) {
-    // Find all form boxes on the page and hide them by removing their 'active' status
+    // Hides whichever box is currently showing
     document.querySelectorAll(".form-box").forEach(form => form.classList.remove("active"));
     
-    // Find the specific form that was clicked and unhide it by adding the 'active' status back
+    // Shows the one that was clicked on
     document.getElementById(formId).classList.add("active");
 }
 
-// Reads the ingredient price data out of the JSON script blocks and stores it for the price calculator
+// Reads the bread/cheese/sauce/topping prices off the page, ready for the price calculator to use
 function loadBuilderPrices() {
     const breadData = document.getElementById('bread-prices-data');
-    // Stops here on any page that doesn't have the sandwich builder on it
+    // Skips this on any page that isn't the sandwich builder
     if (!breadData) return;
 
     window.breadPrices = JSON.parse(breadData.textContent);
@@ -19,30 +19,30 @@ function loadBuilderPrices() {
     window.toppingPrices = JSON.parse(document.getElementById('topping-prices-data').textContent);
 }
 
-// Shows the description for whichever bread/cheese option is currently picked in the dropdown
+// Shows the description for whichever bread or cheese is currently picked
 function updateSelectionDescription(type) {
     const select = document.getElementById(type + '-select');
-    // Stops here on any page that doesn't have the sandwich builder on it
+    // Skips this on any page that isn't the sandwich builder
     if (!select) return;
 
     const selectedId = select.value;
 
-    // Hides every description block of this type first
+    // Hides every description first
     document.querySelectorAll('.' + type + '-description-block').forEach(block => {
         block.classList.remove('active-description');
     });
 
-    // Reveals only the one matching the current dropdown value
+    // Shows only the one that matches what's picked
     const activeBlock = document.getElementById(type + '-desc-' + selectedId);
     if (activeBlock) {
         activeBlock.classList.add('active-description');
     }
 }
 
-// Recalculates the running total from whatever is currently selected, without a page reload
+// Works out the running total on the sandwich builder page, without needing to reload the page
 function updateBuilderTotal() {
     const breadSelect = document.getElementById('bread-select');
-    // Stops here on any page that doesn't have the sandwich builder on it
+    // Skips this on any page that isn't the sandwich builder
     if (!breadSelect) return;
 
     let total = 0;
@@ -68,11 +68,11 @@ function updateBuilderTotal() {
 
     document.getElementById('builder-total-value').textContent = total.toFixed(2);
 
-    // Add to Cart stays disabled until a bread and a cheese have both been chosen
+    // The "Add to Cart" button stays greyed out until a bread and cheese have both been picked
     document.getElementById('add-to-cart-btn').disabled = !(breadId && cheeseId);
 }
 
-// Saves the current selection into the session background workspace slot
+// Quietly saves what's been picked so far, so it isn't lost if the customer leaves the page
 function syncBuilderSelection() {
     const form = document.getElementById('builder-form');
     if (!form) return;
@@ -81,11 +81,11 @@ function syncBuilderSelection() {
         method: 'POST',
         body: new FormData(form)
     }).catch(() => {
-        // A failed background save shouldn't interrupt the price shown on screen
+        // If this quiet save fails, it's not worth bothering the customer about
     });
 }
 
-// Runs everything that needs to happen whenever a builder field changes
+// Runs everything that needs to happen when something changes on the sandwich builder
 function handleBuilderChange(type) {
     if (type === 'bread' || type === 'cheese') {
         updateSelectionDescription(type);
@@ -94,11 +94,11 @@ function handleBuilderChange(type) {
     syncBuilderSelection();
 }
 
-// Opens time picker when the clock is clicked
+// Opens the time picker when the clock is clicked, instead of only the tiny text box
 function openTimePicker(event) {
     const input = document.getElementById('pickup-time-input');
     if (!input) return;
-    // Avoids double-triggering if the time picker is already open
+    // Stops it from opening twice if the click landed on the box itself
     if (event.target === input) return;
     if (input.showPicker) {
         input.showPicker();
@@ -107,7 +107,7 @@ function openTimePicker(event) {
     }
 }
 
-// Adds up every item's price x quantity currently shown on the checkout page and updates the Cart Total
+// Adds up every item in the cart and updates the total shown on the checkout page
 function updateCartGrandTotal() {
     let total = 0;
     document.querySelectorAll('.qty-form').forEach(form => {
@@ -123,9 +123,9 @@ function updateCartGrandTotal() {
     }
 }
 
-// Updates the quantity on screen instantly and saves it to the server in the background
+// Updates a sandwich's quantity on screen straight away, and saves it in the background
 function submitQtyForm(input) {
-    // Validates the qty is between 1 and 99 and updates the input field to match
+    // Keeps the number between 1 and 99
     let quantity = parseInt(input.value, 10);
     if (isNaN(quantity)) quantity = 1;
     quantity = Math.max(1, Math.min(quantity, 99));
@@ -134,7 +134,7 @@ function submitQtyForm(input) {
     const form = input.closest('.qty-form');
     const price = parseFloat(form.dataset.price);
 
-    // Updates the subtotal for this item on screen, hiding it if the quantity is 1
+    // Updates this item's own subtotal, hiding it again if there's only 1
     const orderItem = form.closest('.checkout-order-item');
     const subtotalWrapper = orderItem.querySelector('.checkout-order-item-subtotal');
     const subtotalValue = orderItem.querySelector('.subtotal-value');
@@ -145,19 +145,19 @@ function submitQtyForm(input) {
         subtotalWrapper.style.display = 'none';
     }
 
-    // Recalculates the overall Cart Total across every item on the page
+    // Updates the overall cart total too
     updateCartGrandTotal();
 
-    // Saves the new quantity to the session in the background
+    // Saves the new quantity in the background, without reloading the page
     fetch(form.action, {
         method: 'POST',
         body: new FormData(form)
     }).catch(() => {
-        // A failed background save shouldn't interrupt the quantity shown on screen
+        // If this quiet save fails, the number on screen still stays correct for now
     });
 }
 
-// Increases or decreases a quantity input by 1, thens sends to submitQtyForm to update and save it
+// Handles clicking the + or - buttons next to a sandwich's quantity
 function adjustQty(button, delta) {
     const form = button.closest('form');
     const input = form.querySelector('.qty-input');
@@ -168,7 +168,7 @@ function adjustQty(button, delta) {
     submitQtyForm(input);
 }
 
-// Restores correct details on screen if the user navigates back to the checkout page after leaving it
+// Sets everything up correctly when a page first loads
 document.addEventListener('DOMContentLoaded', () => {
     loadBuilderPrices();
     updateSelectionDescription('bread');
